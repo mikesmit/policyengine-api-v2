@@ -37,6 +37,17 @@ jobs:
             --memory 8Gi \
             --cpu 8
 
+      # Deploy the same job to a Cloud Run function
+
+      - name: Deploy Cloud Run Function
+        run: |
+          gcloud functions deploy simulate-job \
+            --source . \
+            --region $REGION \
+            --project $PROJECT_ID \
+            --memory 8Gi
+            --cpu 2
+
       - name: Deploy Workflow
         run: |
           gcloud workflows deploy simulate-workflow \
