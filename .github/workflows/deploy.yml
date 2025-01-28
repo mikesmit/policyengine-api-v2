@@ -33,7 +33,6 @@ jobs:
           gcloud beta run jobs deploy simulate-job \
             --source . \
             --region $REGION \
-            --platform managed \
             --project $PROJECT_ID
 
       - name: Deploy Workflow
