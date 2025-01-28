@@ -1,1 +1,1 @@
-policyengine>=3.16.1
+policyengine>=2.5.0
