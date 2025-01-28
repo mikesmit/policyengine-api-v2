@@ -1,14 +1,14 @@
 main:
   params: [input]
   steps:
-  - run_job:
-    call: googleapis.run.v1.namespaces.jobs.run
-    args:
-      name: namespaces/policyengine-api-prototype/jobs/simulate-job
-      location: us-central1
-      body:
-        overrides:
-          containerOverrides:
-            env:
-            - name: PARAMETERS
-              value: something
+    - run_job:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: namespaces/policyengine-api-prototype/jobs/simulate-job
+          location: us-central1
+          body:
+            overrides:
+              containerOverrides:
+                env:
+                  - name: PARAMETERS
+                    value: something
