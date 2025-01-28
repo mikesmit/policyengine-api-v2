@@ -1,21 +1,16 @@
 main:
   params: [input]
   steps:
-    - init:
-        assign:
-          - projectId: "{{ PROJECT_ID }}"
-          - region: "{{ REGION }}"
-          - jobName: "simulate-job"
     - run_job:
         call: googleapis.run.v1.namespaces.jobs.run
         args:
-          name: "namespaces/{{ projectId }}/jobs/{{ jobName }}"
-          location: "{{ region }}"
+          name: namespaces/policyengine-api-prototype/jobs/simulate-job
+          location: us-central1
           body:
             apiVersion: "run.googleapis.com/v1"
             kind: "Job"
             metadata:
-              name: "{{ jobName }}"
+              name: simulate-job
             spec:
               template:
                 spec:
