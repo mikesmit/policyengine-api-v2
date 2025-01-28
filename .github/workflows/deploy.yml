@@ -43,6 +43,7 @@ jobs:
         run: |
           gcloud functions deploy simulate-job \
             --source . \
+            --runtime python310 \
             --region $REGION \
             --project $PROJECT_ID \
             --memory 8Gi
