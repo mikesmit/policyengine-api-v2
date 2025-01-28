@@ -31,7 +31,7 @@ jobs:
       - name: Deploy Cloud Run Job
         run: |
           gcloud beta run jobs deploy simulate-job \
-            --source . \
+            --source ./tasks/jobs/main/ \
             --region $REGION \
             --project $PROJECT_ID \
             --memory 8Gi \
@@ -41,13 +41,16 @@ jobs:
 
       - name: Deploy Cloud Run Function
         run: |
-          gcloud functions deploy simulate-job \
-            --source . \
+          gcloud functions deploy simulate-function \
+            --source ./tasks/functions/main \
             --runtime python310 \
             --region $REGION \
             --project $PROJECT_ID \
-            --memory 8Gi
-            --cpu 2
+            --memory 8Gi \
+            --cpu 2 \
+            --entry-point=main \
+            --trigger-http \
+            --allow-unauthenticated
 
       - name: Deploy Workflow
         run: |
