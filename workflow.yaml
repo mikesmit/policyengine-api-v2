@@ -9,8 +9,8 @@ main:
     - run_job:
         call: googleapis.run.v1.namespaces.jobs.run
         args:
-          name: namespaces/{{ projectId }}/jobs/{{ jobName }}
-          location: {{ region }}
+          name: "namespaces/{{ projectId }}/jobs/{{ jobName }}"
+          location: "{{ region }}"
           body:
             apiVersion: "run.googleapis.com/v1"
             kind: "Job"
