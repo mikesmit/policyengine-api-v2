@@ -28,7 +28,7 @@ jobs:
 
       - name: Deploy Cloud Run Job
         run: |
-          gcloud beta run jobs deploy simulate-job \
+          gcloud run jobs deploy simulate-job \
             --source . \
             --region $REGION \
             --platform managed \
