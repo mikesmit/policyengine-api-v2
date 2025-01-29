@@ -13,9 +13,9 @@ main:
                   - name: JOB_ID
                     value: ${input.job_id}
     - run_function:
-      call: http.get
-      args:
-          url: https://us-central1-policyengine-api-prototype.cloudfunctions.net/simulate-function
-          query:
-            job_id: ${input.job_id}
+        call: http.get
+        args:
+            url: https://us-central1-policyengine-api-prototype.cloudfunctions.net/simulate-function
+            query:
+              job_id: ${input.job_id}
     
