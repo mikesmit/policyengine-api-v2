@@ -1,0 +1,47 @@
+name: Deploy to Google Cloud
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - .github/workflows/deploy_cloud_function_main.yml
+      - policyengine_api_prototype/**
+      - tasks/function/main/**
+
+env:
+  PROJECT_ID: policyengine-api-prototype
+  REGION: us-central1
+
+jobs:
+  deploy:
+    name: Deploy Cloud Run 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+            install_components: beta
+
+      - name: Deploy Cloud Run function
+        run: |
+          gcloud functions deploy simulate-function \
+            --source ./tasks/functions/main \
+            --runtime python310 \
+            --region $REGION \
+            --project $PROJECT_ID \
+            --memory 8Gi \
+            --cpu 2 \
+            --entry-point=main \
+            --trigger-http \
+            --allow-unauthenticated

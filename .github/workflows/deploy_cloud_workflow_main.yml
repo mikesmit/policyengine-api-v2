@@ -3,6 +3,10 @@ name: Deploy to Google Cloud
 on:
   push:
     branches: [ main ]
+    paths:
+      - .github/workflows/deploy_cloud_workflow_main.yml
+      - policyengine_api_prototype/**
+      - tasks/workflows/main.yaml
 
 env:
   PROJECT_ID: policyengine-api-prototype
@@ -10,6 +14,7 @@ env:
 
 jobs:
   deploy:
+    name: Deploy workflow
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -27,30 +32,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
             install_components: beta
-
-      - name: Deploy Cloud Run Job
-        run: |
-          gcloud beta run jobs deploy simulate-job \
-            --source ./tasks/jobs/main/ \
-            --region $REGION \
-            --project $PROJECT_ID \
-            --memory 8Gi \
-            --cpu 8
-
-      # Deploy the same job to a Cloud Run function
-
-      - name: Deploy Cloud Run Function
-        run: |
-          gcloud functions deploy simulate-function \
-            --source ./tasks/functions/main \
-            --runtime python310 \
-            --region $REGION \
-            --project $PROJECT_ID \
-            --memory 8Gi \
-            --cpu 2 \
-            --entry-point=main \
-            --trigger-http \
-            --allow-unauthenticated
 
       - name: Deploy Workflow
         run: |
