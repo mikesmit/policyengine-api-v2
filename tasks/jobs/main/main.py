@@ -1,12 +1,9 @@
 print("Starting job...")
 
-import flask
-import functions_framework
 from pydantic import BaseModel
 from policyengine import Simulation
 import os
-from sqlmodel import Field, Session, SQLModel, create_engine
-from policyengine_api_prototype import Job
+from sqlmodel import Field, Session
 from dotenv import load_dotenv
 from policyengine_api_prototype import Job, get_local_database_engine, get_production_database_engine
 
