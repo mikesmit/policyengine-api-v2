@@ -26,4 +26,4 @@ def execute_job_from_id(job_id: int):
         session.add(job)
         session.commit()
 
-execute_job_from_id(os.getenv("JOB_ID"))
+execute_job_from_id(int(os.getenv("JOB_ID")))

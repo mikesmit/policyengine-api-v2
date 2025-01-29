@@ -31,6 +31,6 @@ def execute_job_from_id(job_id: int):
 @functions_framework.http
 def main(request: flask.Request) -> dict:
     # Get job_id from query parameter
-    job_id = request.args.get("job_id")
+    job_id = int(request.args.get("job_id"))
 
     execute_job_from_id(job_id)
