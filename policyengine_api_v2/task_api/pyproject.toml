@@ -16,7 +16,9 @@ dependencies = [
     "policyengine",
     "pydantic",
     "fastapi[standard]",
-    "sqlmodel"
+    "sqlmodel",
+    "cloud-sql-python-connector[pg8000]",
+    "python-dotenv"
 ]
 
 [project.optional-dependencies]
@@ -32,11 +34,12 @@ dev = [
 ]
 
 [tool.setuptools]
+package-dir = {"policyengine_task_api" = "task_api"}
 packages = ["policyengine_task_api"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-"policyengine" = ["**/*"]
+"policyengine_task_api" = ["**/*"]
 
 [tool.pytest.ini_options]
 addopts = "-v"

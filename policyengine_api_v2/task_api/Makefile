@@ -1,5 +1,5 @@
 format:
 	black . -l 79
 
-debug-api:
-	fastapi dev task_api/api/app.py
+debug:
+	LOCAL_DATABASE=true fastapi dev task_api/api/app.py

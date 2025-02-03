@@ -28,7 +28,12 @@ class Job(SQLModel, table=True):
 
 
 def get_local_database_engine():
-    engine = create_engine(Path(__file__).parent / "database.db")
+    SQLITE_PREFIX = "sqlite:///"
+
+    PATH_TO_DB: str = str(Path(__file__).parent / "database.db")
+
+    engine = create_engine(SQLITE_PREFIX + PATH_TO_DB)
+    # engine = create_engine(Path(__file__).parent / "database.db")
     SQLModel.metadata.create_all(engine)
     return engine
 
