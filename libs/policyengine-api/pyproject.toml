@@ -1,0 +1,35 @@
+[project]
+name = "policyengine-api"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Your Name",email = "you@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "policyengine-fastapi @ file:///home/ec2-user/workspaces/policyengine-api-v2/libs/policyengine-fastapi"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [
+  {include = "policyengine", from = "src" },
+]
+
+[tool.poetry.dependencies]
+policyengine-fastapi = {develop = true}
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]

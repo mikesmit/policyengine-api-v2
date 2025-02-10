@@ -1,5 +1,9 @@
-format:
-	black . -l 79
+POETRY_DIRS = libs/policyengine-fastapi \
+              libs/policyengine-api \
+              projects/policyengine-api-household
 
-debug-api:
-	fastapi dev api/app.py
+install:
+	@for dir in $(POETRY_DIRS); do \
+		echo "Installing dependencies in $$dir..."; \
+		cd $$dir && poetry install && cd -; \
+	done
