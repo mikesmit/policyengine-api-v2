@@ -8,7 +8,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "policyengine-fastapi @ file:///home/ec2-user/workspaces/policyengine-api-v2/libs/policyengine-fastapi"
+    "policyengine-fastapi @ ../policyengine-fastapi"
 ]
 
 
