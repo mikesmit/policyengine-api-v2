@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from sqlmodel import Field, SQLModel, Session
-from policyengine.fastapi.database import SessionGeneratorFactory
-from policyengine.fastapi.auth import JWTDecoder
+from policyengine_fastapi.database import SessionGeneratorFactory
+from policyengine_fastapi.auth import JWTDecoder
 import logging
 
 #Use standard python logging 

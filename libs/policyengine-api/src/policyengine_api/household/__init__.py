@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from policyengine.fastapi.auth.jwt_decoder import JWTDecoder
+from policyengine_fastapi.auth.jwt_decoder import JWTDecoder
 from .household import create_router as create_household_router
 from .user import create_router as create_user_router
-from policyengine.fastapi.database import SessionGeneratorFactory
+from policyengine_fastapi.database import SessionGeneratorFactory
 
 def include_all_routers(app:FastAPI,
                         session_depedency:SessionGeneratorFactory,

@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, FastAPI
 
-from policyengine.fastapi.database import create_sqlite_engine
+from policyengine_fastapi.database import create_sqlite_engine
 
 
 engine = create_sqlite_engine()

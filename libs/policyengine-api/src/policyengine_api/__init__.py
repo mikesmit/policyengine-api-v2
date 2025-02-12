@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from sqlalchemy import Engine
 
-from policyengine.fastapi.auth.jwt_decoder import JWTDecoder
-from policyengine.fastapi.database import create_session_dep
+from policyengine_fastapi.auth.jwt_decoder import JWTDecoder
+from policyengine_fastapi.database import create_session_dep
 from .household import include_all_routers
 
 '''

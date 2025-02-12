@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Annotated
 from sqlmodel import Session
-from policyengine.fastapi.auth import JWTDecoder
-from policyengine.fastapi.database import SessionGeneratorFactory
+from policyengine_fastapi.auth import JWTDecoder
+from policyengine_fastapi.database import SessionGeneratorFactory
 from .models import SimulationJob
 import json
 from datetime import datetime

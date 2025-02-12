@@ -3,10 +3,10 @@
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from contextlib import asynccontextmanager
-from policyengine.fastapi.database import create_sqlite_engine
-from policyengine.fastapi.auth import JWTDecoder
+from policyengine_fastapi.database import create_sqlite_engine
+from policyengine_fastapi.auth import JWTDecoder
 from .settings import get_settings, Environment
-from policyengine.fastapi.opentelemetry import (
+from policyengine_fastapi.opentelemetry import (
     GCPLoggingInstrumentor, 
     FastAPIEnhancedInstrumenter, 
     export_ot_to_console, 
@@ -14,8 +14,8 @@ from policyengine.fastapi.opentelemetry import (
 )
 from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_INSTANCE_ID, Resource
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-from policyengine.api import initialize
-from policyengine.api.simulation.router import create_simulation_router
+from policyengine_api import initialize
+from policyengine_api.simulation.router import create_simulation_router
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # import our new simulation router
 
@@ -52,7 +52,7 @@ optional_auth = JWTDecoder(
     auto_error=False
 )
 
-from policyengine.fastapi.database import create_session_dep
+from policyengine_fastapi.database import create_session_dep
 session_dep = create_session_dep(engine)
 
 sim_router = create_simulation_router(

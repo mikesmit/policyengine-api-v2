@@ -5,9 +5,9 @@ from fastapi.testclient import TestClient
 import pytest
 from sqlmodel import SQLModel
 from ...common.fixtures import createApi, engine
-from policyengine.api.household import create_user_router
+from policyengine_api.household import create_user_router
 from pydantic_core import from_json
-from policyengine.fastapi.database import create_session_dep
+from policyengine_fastapi.database import create_session_dep
 
 
 def auth_override(creds:HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False))):

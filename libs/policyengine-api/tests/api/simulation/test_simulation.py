@@ -4,10 +4,10 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import SQLModel, Session
-from policyengine.api.simulation.router import create_simulation_router
-from policyengine.api.simulation.models import SimulationJob
-from policyengine.fastapi.database import create_sqlite_engine, create_session_dep
-from policyengine.fastapi.auth.jwt_decoder import JWTDecoder
+from policyengine_api.simulation.router import create_simulation_router
+from policyengine_api.simulation.models import SimulationJob
+from policyengine_fastapi.database import create_sqlite_engine, create_session_dep
+from policyengine_fastapi.auth.jwt_decoder import JWTDecoder
 
 # Helper to create a minimal FastAPI app for testing a router
 def createApi(router):
