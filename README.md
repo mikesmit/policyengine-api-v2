@@ -1,36 +1,39 @@
-This is the monorepo containing all our common api code and FastAPI-based WSGI applications for
-the new policyengine api v2.
+Monorepo containing all the libraries, applications, terraform and github actions required to build/test/deploy/release the PolicyEngine api V2.
 
-## Structure
-* libs - directory containing packages that are dependencies of other packages
-* projects - directory containing packages that are intended to be deployed as applications.
+# Local Development Quick Start
+* [install poetry](https://python-poetry.org/docs/#installation)
+* ``make build`` - install and pytest all libraries and projects.
 
-## Build tools
-All packages are managed via poetry. Tests are run via pytest.
+# Cloud Development Quick Start
+__NOTE: MOST development should be possible locally. Deployment is slow and hard to debug. Change with caution__
 
-## Setup 
-1. install [poetry](https://python-poetry.org/docs/)
-2. run ``make install``
+* One time setup - this will create a new project in your GCP account you can deploy the api to.
+  * Create a gcp account _with organization_
+  * authenticate with gcloud as a user with permission to create projects.
+  * Have your organization ID and billing account number handy.
+  * ``cd terraform/project-policyengine-api && make bootstrap``
+  * You should now have a terraform/.bootstrap_settings folder containing your project settings.
+* build the api docker image
+  * ``cd projects/policyengine-api-household && make deploy``
+  * There should now be a new hash under the tag "desktop" in the project artifact repository.
+* deploy to the cloud
+  * ``cd terraform/infra-policyengine-api && make deploy``
+  * The cloudrun service should now be running using the latest image version of the tag "deksop" from your project artifact respository
 
-## Testing
-either
-* run ``make test`` to run all tests or
-* go into the target directory and run
-  * ``source .venv/bin/activate``
-  * ``pytest``
+# Github Deploy to Cloud Quick Start
 
-## Mono repo structure
-* /libraries - are common code that is intended to be build and consumed as packages
-* /applications - applications which are intended to be built into and deploy as part of docker containers.
+__checkout a clean version of the repository__ you cannot bootstrap more than one project 
+in a workspace at a time.
 
-## library package structure
-* /src - contains the actual code
-  * /policyengine - namespace for our package (no ``__init__.py``)
-* /tests - contains the tests
-  * conftest.py - automatically loaded test fixtures.
-  * /common - common code used by the other tests
-* poetry.toml - poetry settings applied to this project alone
-* pyproject.toml - definition of the package and dependencies.
-
-## project package structure
-Projects are intended to be run, not packaged and distributed.
+* bootstrap the beta project
+  * have your github repo owner id and repo (i.e. org/repo) ready
+  * have your GCP organization id and billing account number ready
+  * log into your gcp account via gcloud as a user able to create projects.
+  * ``cd terraform/project-poicyengine-api && make bootstrap_beta``
+* configure github
+  * create a new environment in your github repo settings called "beta" and, using the ouput of the bootstrap, configure the following values
+    * REGION (generally us-central1)
+    * PROJECT_ID (in the output of the bootstrap target)
+    * _GITHUB_IDENTITY_POOL_PROVIDER_NAME (in the output of the bootstrap build target)
+    * ORG_ID
+    * BILLING_ACCOUNT

@@ -13,20 +13,33 @@ output "project_id" {
     description = "ID of this project"
 }
 
-output "project_base_id" {
-    value = var.project_id
+output "project_name" {
+    value = var.project_name
     description = "Base project ID (can be used to create resource names)"
 }
 
-output "service_account_email" {
+output "project_service_account_email" {
     value = module.project.service_account_email
     description = "Project service account"
+}
+
+output "deploy_service_account_email" {
+    value = google_service_account.deploy.email
+    description = "Service account for deploying to the project"
 }
 
 output "docker_repository_namespace" {
     value = "${google_artifact_registry_repository.docker_repo.location}-docker.pkg.dev/${module.project.project_id}/${google_artifact_registry_repository.docker_repo.name}"
 }
 
-output "build_account_email" {
+output "build_service_account_email" {
     value = google_service_account.build.email
+}
+
+output "github_identity_pool_provider_name" {
+    value = google_iam_workload_identity_pool_provider.github.name
+}
+
+output "log_bucket_url" {
+    value = google_storage_bucket.logs.name
 }
