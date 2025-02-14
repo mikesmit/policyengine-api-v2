@@ -1,3 +1,5 @@
 backend.tfvars
 apply.tfvars
 .terraform.lock.*
+terraform.tfstate
+terraform.tfstate.backup
