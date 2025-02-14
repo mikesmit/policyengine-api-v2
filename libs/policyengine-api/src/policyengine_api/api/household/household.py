@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, SQLModel, Field
-from policyengine.fastapi.database import SessionGeneratorFactory
+from policyengine_api.fastapi.database import SessionGeneratorFactory
 
 class HouseholdBase(SQLModel):
     pass
