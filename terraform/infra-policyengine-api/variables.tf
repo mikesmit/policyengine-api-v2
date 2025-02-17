@@ -3,9 +3,13 @@ variable "project_id" {
     description = "project to instantiate the household api service in"
 }
 
-variable "container_image" {
+variable "container_tag" {
     type = string
-    description = "container image to deploy to the household api service"
+}
+
+variable "region" {
+    type = string
+    default = "us-central1"
 }
 
 variable "is_prod" {

@@ -1,0 +1,8 @@
+publish_docker:
+	cd projects/policyengine-api-household && make -f Makefile.deploy deploy TAG=${TAG} PROJECT_ID=${PROJECT_ID} 
+
+deploy_project:
+	cd terraform/project-policyengine-api && make -f Makefile.deploy
+
+deploy_services:
+	cd terraform/infra-policyengine-api && make -f Makefile.deploy
