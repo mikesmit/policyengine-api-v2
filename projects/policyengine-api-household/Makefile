@@ -10,9 +10,9 @@ endif
 include ../../terraform/.bootstrap_settings/project.env
 
 deploy:
-	rm -rf build/staging
-	mkdir -p build/staging/libs
-	cp -R ../../libs/* build/staging/libs/
+	rm -rf artifacts/staging
+	mkdir -p artifacts/staging/libs
+	cp -R ../../libs/* artifacts/staging/libs/
 	gcloud builds submit --region=${REGION} --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/policyengine-api-household:${TAG} ${BUILD_ARGS}
 
 build:

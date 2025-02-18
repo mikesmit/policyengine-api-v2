@@ -11,7 +11,7 @@ WORKDIR app
 # This may copy some dependencies this app doesn't need, but source should
 # not be very large
 #.dockerignore will exclude .venv and .git
-COPY build/staging .
+COPY artifacts/staging .
 COPY pyproject.toml poetry.lock projects/app/
 RUN touch README.md
 
