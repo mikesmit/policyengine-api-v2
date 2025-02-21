@@ -1,5 +1,5 @@
 [project]
-name = "policyengine-api-household"
+name = "policyengine-api-full"
 version = "0.1.0"
 description = ""
 authors = [
