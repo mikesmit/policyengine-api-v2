@@ -21,3 +21,6 @@ deploy:
 build:
 	poetry install
 	@echo "TODO: add back in the tests"
+
+dev:
+	poetry run fastapi dev src/policyengine_api_full/main.py
