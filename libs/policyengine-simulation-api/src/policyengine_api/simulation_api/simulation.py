@@ -5,12 +5,12 @@ from policyengine.simulation import SimulationOptions, Simulation
 from policyengine.outputs.macro.comparison.calculate_economy_comparison import EconomyComparison
 
 
-def create_router(session_dependency:SessionGeneratorFactory):
+def create_router():
     router = APIRouter()
     
     @router.post("/simulate")
-    async def create_houshold(parameters:SimulationOptions)->EconomyComparison:
-        model = SimulationOptions.model_validate(item)
+    async def simulate(parameters:SimulationOptions)->EconomyComparison:
+        model = SimulationOptions.model_validate(parameters)
 
         simulation = Simulation(**model.model_dump())
         

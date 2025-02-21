@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from .settings import get_settings, Environment
 from policyengine_api.fastapi.opentelemetry import GCPLoggingInstrumentor, FastAPIEnhancedInstrumenter, export_ot_to_console, export_ot_to_gcp
 from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_INSTANCE_ID, Resource
-from policyengine_api.api.simulation import initialize
+from policyengine_api.simulation_api import initialize
 import logging
 
 '''
