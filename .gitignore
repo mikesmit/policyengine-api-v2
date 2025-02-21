@@ -5,6 +5,7 @@ database.db
 .dockerfile
 .terraform
 build/
+artifacts/
 .swp
 .bootstrap_settings
 apply.tfvars

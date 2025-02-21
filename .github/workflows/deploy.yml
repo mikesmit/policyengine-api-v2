@@ -1,5 +1,9 @@
 name: Deploy to GCP
-on: [push]
+
+on:
+  push:
+    branches:
+      - master
 env:
   TF_BACKEND_bucket: ${{ vars.PROJECT_ID }}-state
   #TF_VAR_whatever will be picked up as terraform variables.
