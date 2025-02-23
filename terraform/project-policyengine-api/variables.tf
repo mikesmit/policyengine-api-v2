@@ -9,7 +9,7 @@ variable stage {
 
 variable project_name {
     type = string
-    default = "policyengine-api"
+    default = "api-v2"
     description = "The base project id you want to use. This will be added to stage and a unique ID."
 }
 
