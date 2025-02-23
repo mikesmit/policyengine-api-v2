@@ -18,6 +18,6 @@ deploy: .terraform
 	@echo "Running terraform apply with ../.bootstrap_settings/apply.tfvars"
 	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "container_tag=${TAG}@${SHA}"
 
-.terraform: ../backend.tfvars
+.terraform: ../.bootstrap_settings/backend.tfvars
 	@echo "initializing terraform"
 	terraform init -backend-config ../.bootstrap_settings/backend.tfvars
