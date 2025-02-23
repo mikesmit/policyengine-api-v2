@@ -16,8 +16,12 @@ dev:
 	echo "Starting APIs (full+simulation) in dev mode"
 	make dev-api-full & make dev-api-simulation
 
-deploy-desktop: terraform/.bootstrap_settings
+deploy-desktop-api-full: terraform/.bootstrap_settings
 	echo "Deploying API (full) to desktop"
 	cd projects/policyengine-api-full && make deploy
+	
+deploy-desktop-services: terraform/.bootstrap_settings
 	echo "Deploying services"
 	cd terraform/infra-policyengine-api && make deploy
+
+deploy-desktop: deploy-desktop-api-full deploy-desktop-services
