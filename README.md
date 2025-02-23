@@ -14,7 +14,7 @@ __NOTE: MOST development should be possible locally. Deployment is slow and hard
   * ``cd terraform/project-policyengine-api && make bootstrap``
   * You should now have a terraform/.bootstrap_settings folder containing your project settings.
 * build the api docker image
-  * ``cd projects/policyengine-api-household && make deploy``
+  * ``cd projects/policyengine-api-full && make deploy``
   * There should now be a new hash under the tag "desktop" in the project artifact repository.
 * deploy to the cloud
   * ``cd terraform/infra-policyengine-api && make deploy``
