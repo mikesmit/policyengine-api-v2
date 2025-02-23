@@ -29,6 +29,7 @@ module "cloud_run_v2" {
   service_name = local.service_name
   project_id   = var.project_id
   location     = "${var.region}"
+  members     = local.members
 
   cloud_run_deletion_protection = false
 
