@@ -2090,7 +2090,7 @@ optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 policyengine = ">=0.1.1"
@@ -3821,4 +3821,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "9389b0b899a4920629b66b5db12337bd6db16272c906de650a2f375ab99ccd5c"
+content-hash = "accb05ccb1c8a544be56e70323bc3e2b8067f1740c8f0594395c8aa13ced7072"
