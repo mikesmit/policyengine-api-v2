@@ -16,7 +16,7 @@ deploy:
 	rm -rf artifacts/staging
 	mkdir -p artifacts/staging/libs
 	cp -R ../../libs/* artifacts/staging/libs/
-	gcloud builds submit --region=${REGION} --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/policyengine-api-household:${TAG} ${BUILD_ARGS}
+	gcloud builds submit --region=${REGION} --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/policyengine-api-full:${TAG} ${BUILD_ARGS}
 
 build:
 	poetry install

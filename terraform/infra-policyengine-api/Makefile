@@ -13,7 +13,7 @@ REGION?=us-central1
 #it would never update again
 deploy: .terraform
 	@echo "attempting to get the latest docker image with the 'desktop' tag"
-	$(eval SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-household:desktop --format='value(image_summary.digest)'))
+	$(eval SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-full:desktop --format='value(image_summary.digest)'))
 	@echo "latest SHA is ${SHA}"
 	@echo "Running terraform apply with ../.bootstrap_settings/apply.tfvars"
 	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "container_tag=${TAG}@${SHA}"

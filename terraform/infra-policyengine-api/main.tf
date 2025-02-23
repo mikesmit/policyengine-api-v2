@@ -18,7 +18,7 @@ locals {
 
     service_name = "household-api"
 
-    container_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-household:${var.container_tag}"
+    container_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-full:${var.container_tag}"
 }
 
 # https://github.com/GoogleCloudPlatform/terraform-google-cloud-run/tree/main/modules/v2
