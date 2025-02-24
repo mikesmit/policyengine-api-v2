@@ -33,8 +33,7 @@ jobs:
     - uses: "google-github-actions/auth@v2"
       with:
         project_id: ${{ vars.PROJECT_ID }}
-        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
-        service_account: "builder@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
     - name: "Set up Cloud SDK"
       uses: "google-github-actions/setup-gcloud@v2"
       with:
