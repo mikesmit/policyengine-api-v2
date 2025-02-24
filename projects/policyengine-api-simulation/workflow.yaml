@@ -12,9 +12,7 @@ main:
           url: ${cloudRunUrl}
           headers:
             Content-Type: "application/json"
-          body:
-            # Customize your payload as needed. Here we're simply passing any input provided.
-            payload: ${input}
+          body: ${input}
         result: response
     - returnResult:
         return: ${response.body}
