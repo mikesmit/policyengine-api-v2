@@ -16,6 +16,7 @@ env:
   TF_VAR_container_tag: ${{ github.sha }}
   BUILD_TAG: ${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
   COMMIT_TAG: ${{ github.sha }}
+  PROJECT_ID: "nikhil-api-v2-dc52"
 jobs:
   build:
     # Any runner supporting Node 20 or newer
