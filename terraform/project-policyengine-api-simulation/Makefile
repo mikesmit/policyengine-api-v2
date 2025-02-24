@@ -16,6 +16,8 @@ deploy: .terraform
 	$(eval SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-simulation:desktop --format='value(image_summary.digest)'))
 	@echo "latest SHA is ${SHA}"
 	@echo "Running terraform apply with ../.bootstrap_settings/apply.tfvars"
+	@echo "Fetching workflow file contents"
+	$(eval WORKFLOW := $(shell cat ../../projects/policyengine-api-simulation/workflow.yaml))
 	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "container_tag=${SHA}"
 
 .terraform: ../.bootstrap_settings/backend.tfvars

@@ -45,3 +45,39 @@ module "cloud_run_v2" {
     }
   ]
 }
+
+provider "google" {
+  project = var.project_id
+}
+
+# Create a dedicated service account
+resource "google_service_account" "default" {
+  account_id   = "sample-workflows-sa"
+  display_name = "Sample Workflows Service Account"
+}
+
+# Enable Workflows API
+resource "google_project_service" "default" {
+  service            = "workflows.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Create a workflow
+resource "google_workflows_workflow" "default" {
+  name            = "simulation-workflow"
+  region          = "us-central1"
+  description     = "Simulation workflow"
+  service_account = google_service_account.default.id
+
+  deletion_protection = false # set to "true" in production
+
+  labels = {
+    env = "test"
+  }
+  user_env_vars = {
+    service_url = module.cloud_run_v2.service_uri
+  }
+  source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
+
+  depends_on = [google_project_service.default]
+}

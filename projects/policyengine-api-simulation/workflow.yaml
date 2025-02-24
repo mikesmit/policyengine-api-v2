@@ -1,0 +1,20 @@
+# workflows.yaml
+main:
+  params: [input]  # Optional: pass data into the workflow if needed.
+  steps:
+    - init:
+        assign:
+          # Replace with your Cloud Run service URL ending with /simulate.
+          - cloudRunUrl: $${sys.get_env("service_url")}
+    - callCloudRun:
+        call: http.post
+        args:
+          url: "${cloudRunUrl}/simulate"
+          headers:
+            Content-Type: "application/json"
+          body:
+            # Customize your payload as needed. Here we're simply passing any input provided.
+            payload: ${input}
+        result: response
+    - returnResult:
+        return: ${response.body}
