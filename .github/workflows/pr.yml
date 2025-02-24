@@ -1,7 +1,7 @@
-name: Deploy to GCP
+name: Pull request
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 env:
@@ -19,36 +19,11 @@ env:
 jobs:
   build:
     # Any runner supporting Node 20 or newer
+    name: Build and test
     runs-on: ubuntu-latest
     environment: beta
 
     # Add "id-token" with the intended permissions.
-    permissions:
-      contents: "read"
-      id-token: "write"
-
-    steps:
-    - name: checkout repo
-      uses: actions/checkout@v4
-    - uses: "google-github-actions/auth@v2"
-      with:
-        project_id: ${{ vars.PROJECT_ID }}
-        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
-        service_account: "builder@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
-    - name: "Set up Cloud SDK"
-      uses: "google-github-actions/setup-gcloud@v2"
-      with:
-        version: ">= 363.0.0"
-    - name: Build application
-      run: make -f Makefile.deploy publish_docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
-  deploy_beta:
-    needs: [build]
-    runs-on: ubuntu-latest
-    environment: beta
-    env:
-        TF_VAR_stage: beta
-        TF_VAR_is_prod: false
-    
     permissions:
       contents: "read"
       id-token: "write"
@@ -60,11 +35,10 @@ jobs:
       with:
         project_id: ${{ vars.PROJECT_ID }}
         workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
-        service_account: "deploy@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
-    - uses: hashicorp/setup-terraform@v3
-    - name: Deploy services
-      run: make -f Makefile.deploy deploy_services
-    - name: Deploy project
-      run: make -f Makefile.deploy deploy_project
-
-
+        service_account: "builder@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
+    - name: "Set up Cloud SDK"
+      uses: "google-github-actions/setup-gcloud@v2"
+      with:
+        version: ">= 363.0.0"
+    - name: Build and test
+      run: make build
