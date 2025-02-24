@@ -31,6 +31,14 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11"
+    - name: Set up poetry
+      run: uv pip install poetry
     - uses: "google-github-actions/auth@v2"
       with:
         project_id: ${{ vars.PROJECT_ID }}
