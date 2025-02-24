@@ -9,7 +9,7 @@ main:
     - callCloudRun:
         call: http.post
         args:
-          url: "${cloudRunUrl}/simulate"
+          url: "$${cloudRunUrl}/simulate"
           headers:
             Content-Type: "application/json"
           body:
