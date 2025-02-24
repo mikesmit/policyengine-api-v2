@@ -38,7 +38,7 @@ jobs:
       with:
         python-version: "3.11"
     - name: Set up poetry
-      run: uv pip install poetry
+      run: uv pip install poetry --system
     - uses: "google-github-actions/auth@v2"
       with:
         project_id: ${{ vars.PROJECT_ID }}
