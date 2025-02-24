@@ -21,7 +21,6 @@ jobs:
     # Any runner supporting Node 20 or newer
     name: Build and test
     runs-on: ubuntu-latest
-    environment: beta
 
     # Add "id-token" with the intended permissions.
     permissions:
