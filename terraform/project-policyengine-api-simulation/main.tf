@@ -75,7 +75,7 @@ resource "google_workflows_workflow" "default" {
     env = "test"
   }
   user_env_vars = {
-    service_url = module.cloud_run_v2.service_uri
+    service_url = "${module.cloud_run_v2.service_uri}/simulate"
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 

@@ -5,11 +5,11 @@ main:
     - init:
         assign:
           # Replace with your Cloud Run service URL ending with /simulate.
-          - cloudRunUrl: $${sys.get_env("service_url")}
+          - cloudRunUrl: ${sys.get_env("service_url")}
     - callCloudRun:
         call: http.post
         args:
-          url: "$${cloudRunUrl}/simulate"
+          url: ${cloudRunUrl}
           headers:
             Content-Type: "application/json"
           body:
