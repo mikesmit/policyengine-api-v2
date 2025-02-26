@@ -17,3 +17,6 @@ deploy:
 		-var="region=$(REGION)" \
 		-var="full_container_tag=$(FULL_SHA)" \
 		-var="simulation_container_tag=$(SIM_SHA)"
+
+plan-deploy:
+	terraform plan

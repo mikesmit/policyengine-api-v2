@@ -1,6 +1,9 @@
 deploy: .terraform
 	terraform apply -input=false -auto-approve
 
+plan-deploy: .terraform
+	terraform plan
+
 backend.tf:
 	cp backend.example_tf backend.tf
 

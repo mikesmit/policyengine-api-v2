@@ -4,7 +4,7 @@ REGION?=us-central1
 ifdef LOG_DIR
   BUILD_ARGS=--gcs-log-dir ${LOG_DIR}
 endif
-PROJECT_ID?=policyengine-api-prototype
+PROJECT_ID?=
 
 # Check if the depoyment project env file exists and include it if so. That way build target still works even if you haven't set up
 # a gcp project (which usually you wouldn't bother doing)
