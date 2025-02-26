@@ -1,0 +1,19 @@
+# This makefile is for CI/CD deployment
+
+deploy:
+	# Setup environment from CI/CD variables or use defaults
+	$(eval TAG ?= latest)
+	$(eval REGION ?= us-central1)
+	$(eval PROJECT_ID_FROM_ENV := $(shell echo $$PROJECT_ID))
+	
+	# Get SHA for both containers
+	$(eval FULL_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID_FROM_ENV)/api-v2/policyengine-api-full:$(TAG) --format='value(image_summary.digest)'))
+	$(eval SIM_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID_FROM_ENV)/api-v2/policyengine-api-simulation:$(TAG) --format='value(image_summary.digest)'))
+	
+	# Initialize and apply terraform
+	terraform init -backend-config=backend.tf
+	terraform apply -auto-approve \
+		-var="project_id=$(PROJECT_ID_FROM_ENV)" \
+		-var="region=$(REGION)" \
+		-var="full_container_tag=$(FULL_SHA)" \
+		-var="simulation_container_tag=$(SIM_SHA)"
