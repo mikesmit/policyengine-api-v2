@@ -10,3 +10,4 @@ artifacts/
 .bootstrap_settings
 apply.tfvars
 backend.tfvars
+CLAUDE.md
