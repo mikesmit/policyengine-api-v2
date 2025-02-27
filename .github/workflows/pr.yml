@@ -16,7 +16,7 @@ env:
   TF_VAR_container_tag: ${{ github.sha }}
   BUILD_TAG: ${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
   COMMIT_TAG: ${{ github.sha }}
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  PROJECT_ID: ${{ vars.PROJECT_ID }}
 jobs:
   build:
     # Any runner supporting Node 20 or newer
@@ -82,4 +82,4 @@ jobs:
       with:
         version: ">= 363.0.0"
     - name: Test deployment
-      run: make -f Makefile.deploy plan-deploy TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
+      run: make -f Makefile.deploy plan-deploy TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }}

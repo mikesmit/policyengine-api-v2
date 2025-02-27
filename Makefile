@@ -17,14 +17,14 @@ dev:
 	make dev-api-full & make dev-api-simulation
 	
 deploy-infra: terraform/.bootstrap_settings
-	echo "Deploying infrastructure"
-	cd terraform/infra-policyengine-api && make deploy
-
-deploy-api: terraform/.bootstrap_settings
 	echo "Publishing API images"
 	cd projects/policyengine-api-full && make deploy
 	cd projects/policyengine-api-simulation && make deploy
-	echo "Deploying APIs"
+	echo "Deploying infrastructure"
+	cd terraform/infra-policyengine-api && make deploy
+
+deploy-project: terraform/.bootstrap_settings
+	echo "Deploying project"
 	cd terraform/project-policyengine-api && make deploy
 
-deploy: deploy-infra deploy-api
+deploy: deploy-project deploy-infra

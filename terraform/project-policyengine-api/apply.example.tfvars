@@ -1,3 +1,3 @@
-project_id = "your-gcp-project-id"
-region = "us-central1"
-is_prod = false
+org_id="XXXXX"
+billing_account="XXXX"
+stage="desktop"

@@ -8,10 +8,12 @@ deploy-infra:
 deploy-api:
 	cd terraform/project-policyengine-api && make -f Makefile.deploy
 
-deploy: publish-docker deploy-infra deploy-api
+deploy: publish-docker deploy-project deploy-infra
 
 plan-deploy-infra:
 	cd terraform/infra-policyengine-api && make -f Makefile.deploy plan-deploy
 
-plan-deploy:
+plan-deploy-project:
 	cd terraform/project-policyengine-api && make -f Makefile.deploy plan-deploy
+
+plan-deploy: plan-deploy-project plan-deploy-infra
