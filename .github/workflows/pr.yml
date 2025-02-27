@@ -74,9 +74,8 @@ jobs:
       run: uv pip install poetry --system
     - uses: "google-github-actions/auth@v2"
       with:
-        project_id: "nikhil-api-v2-dc52"
-        workload_identity_provider: "projects/1046761260223/locations/global/workloadIdentityPools/nikhil-github-api-v2/providers/nikhil-github-api-v2"
-        service_account: "deploy@nikhil-api-v2-dc52.iam.gserviceaccount.com"
+        credentials_json: ${{ secrets.GCP_SA_KEY}}
+        project_id: ${{ vars.PROJECT_ID }}
     - name: "Set up Cloud SDK"
       uses: "google-github-actions/setup-gcloud@v2"
       with:
