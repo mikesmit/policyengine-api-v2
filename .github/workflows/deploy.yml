@@ -39,7 +39,7 @@ jobs:
       with:
         version: ">= 363.0.0"
     - name: Build application
-      run: make -f Makefile.deploy publish_docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
+      run: make -f Makefile.deploy publish-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
   deploy_beta:
     needs: [build]
     runs-on: ubuntu-latest
