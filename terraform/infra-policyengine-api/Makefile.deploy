@@ -1,6 +1,6 @@
 # This makefile is for CI/CD deployment
 
-deploy:
+.terraform:
 	# Setup environment from CI/CD variables or use defaults
 	$(eval TAG ?= latest)
 	$(eval REGION ?= us-central1)
@@ -12,11 +12,13 @@ deploy:
 	
 	# Initialize and apply terraform
 	terraform init -backend-config=backend.tf
+
+deploy: .terraform
 	terraform apply -auto-approve \
 		-var="project_id=$(PROJECT_ID_FROM_ENV)" \
 		-var="region=$(REGION)" \
 		-var="full_container_tag=$(FULL_SHA)" \
 		-var="simulation_container_tag=$(SIM_SHA)"
 
-plan-deploy:
+plan-deploy: .terraform
 	terraform plan
