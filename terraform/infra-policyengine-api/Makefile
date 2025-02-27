@@ -1,5 +1,5 @@
 # For github action deployes we use environment variables to configure terraform
-# on desktop we use apply files generated either by the project-policyengine-api bootstrap
+# on desktop we use apply files generated either by the infra-policyengine-api bootstrap
 # or manual user config
 
 # get the project ID
@@ -8,16 +8,20 @@ TAG?=desktop
 REPO?=api-v2
 REGION?=us-central1
 
-#we have to find the sha of the latest image because terraform doesn't know
-#that a label got a new sha between deployments so if you just said "desktop"
-#it would never update again
+#we have to find the sha of the latest images because terraform doesn't know
+#that a label got a new sha between deployments
 deploy: .terraform
-	@echo "attempting to get the latest docker image with the 'desktop' tag"
-	$(eval SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-household:desktop --format='value(image_summary.digest)'))
-	@echo "latest SHA is ${SHA}"
+	@echo "Attempting to get the latest docker images with the '${TAG}' tag"
+	$(eval FULL_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-full:$(TAG) --format='value(image_summary.digest)'))
+	$(eval SIM_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-simulation:$(TAG) --format='value(image_summary.digest)'))
+	@echo "Latest Full API SHA: ${FULL_SHA}"
+	@echo "Latest Simulation API SHA: ${SIM_SHA}"
 	@echo "Running terraform apply with ../.bootstrap_settings/apply.tfvars"
-	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "container_tag=${TAG}@${SHA}"
+	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "full_container_tag=${FULL_SHA}" -var "simulation_container_tag=${SIM_SHA}"
 
-.terraform: ../backend.tfvars
-	@echo "initializing terraform"
+.terraform: ../.bootstrap_settings/backend.tfvars
+	@echo "Initializing terraform"
 	terraform init -backend-config ../.bootstrap_settings/backend.tfvars
+
+bootstrap_beta:
+	cd ../infra-policyengine-api && make bootstrap_beta
