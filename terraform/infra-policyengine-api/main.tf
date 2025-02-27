@@ -96,3 +96,14 @@ resource "google_workflows_workflow" "simulation_workflow" {
 
   depends_on = [google_project_service.workflows_api]
 }
+# Create a dedicated service account for workflow
+resource "google_service_account" "workflow_sa" {
+  account_id   = "simulation-workflows-sa"
+  display_name = "Simulation Workflows Service Account"
+}
+
+# Enable Workflows API
+resource "google_project_service" "workflows_api" {
+  service            = "workflows.googleapis.com"
+  disable_on_destroy = false
+}
