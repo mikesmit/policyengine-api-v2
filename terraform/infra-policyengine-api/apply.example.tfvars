@@ -1,3 +1,2 @@
-project_id = "your-gcp-project-id"
-region = "us-central1"
+project_id = "XXXX"
 is_prod = false

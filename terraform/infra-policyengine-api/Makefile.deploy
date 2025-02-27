@@ -1,5 +1,8 @@
 # This makefile is for CI/CD deployment
 
+backend.tf:
+	cp backend.example_tf backend.tf
+
 .terraform:
 	# Setup environment from CI/CD variables or use defaults
 	$(eval TAG ?= latest)

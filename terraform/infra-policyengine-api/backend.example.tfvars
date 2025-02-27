@@ -1,2 +1,2 @@
-bucket = "your-terraform-state-bucket"
-prefix = "terraform/state"
+bucket = "your terraform storage bucket"
+path = "terraform/desktop/policyengine-api"
