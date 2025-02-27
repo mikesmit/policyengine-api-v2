@@ -21,4 +21,4 @@ deploy: .terraform
 		-var="simulation_container_tag=$(SIM_SHA)"
 
 plan-deploy: .terraform
-	terraform plan
+	terraform plan -backend-config="bucket=${TF_BACKEND_bucket}"
