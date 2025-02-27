@@ -2,7 +2,7 @@ locals {
     # Assumption from cost estimate. May need to tweak based on real performance.
     max_instance_request_concurrency = var.is_prod ? 80 : null
     # API is reachable if production otherwise internal-only.
-    members = var.is_prod ? ["allUsers"] : ["allUsers"]
+    members = var.is_prod ? ["allUsers"] : []
     # keep one instance running at all times in production for responsiveness.
     # in other environments don't waste the money
     service_scaling = var.is_prod ? {
