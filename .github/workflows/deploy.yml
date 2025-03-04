@@ -13,11 +13,12 @@ env:
   TF_VAR_github_repo: ${{ github.repository }}
   TF_VAR_project_id: ${{ vars.PROJECT_ID }}
   TF_VAR_region: ${{ vars.REGION }}
-  TF_VAR_container_tag: ${{ github.sha }}
+  TF_VAR_full_container_tag: ${{ github.sha }}
+  TF_VAR_simulation_container_tag: ${{ github.sha }}
   BUILD_TAG: ${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
   COMMIT_TAG: ${{ github.sha }}
 jobs:
-  build:
+  build_simulation_api_image:
     # Any runner supporting Node 20 or newer
     runs-on: ubuntu-latest
     environment: beta
@@ -32,16 +33,40 @@ jobs:
       uses: actions/checkout@v4
     - uses: "google-github-actions/auth@v2"
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY}}
-        project_id: ${{ vars.PROJECT_ID }}
+        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
+        service_account: "builder@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
     - name: "Set up Cloud SDK"
       uses: "google-github-actions/setup-gcloud@v2"
       with:
         version: ">= 363.0.0"
     - name: Build application
-      run: make -f Makefile.deploy publish-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
+      run: make -f Makefile.deploy publish-simulation-api-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
+
+  build_full_api_image:
+    # Any runner supporting Node 20 or newer
+    runs-on: ubuntu-latest
+    environment: beta
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v4
+    - uses: "google-github-actions/auth@v2"
+      with:
+        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
+        service_account: "builder@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
+    - name: "Set up Cloud SDK"
+      uses: "google-github-actions/setup-gcloud@v2"
+      with:
+        version: ">= 363.0.0"
+    - name: Build application
+      run: make -f Makefile.deploy publish-full-api-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
   deploy_beta:
-    needs: [build]
+    needs: [build_simulation_api_image, build_full_api_image]
     runs-on: ubuntu-latest
     environment: beta
     env:
@@ -57,12 +82,10 @@ jobs:
       uses: actions/checkout@v4
     - uses: "google-github-actions/auth@v2"
       with:
-        project_id: ${{ vars.PROJECT_ID }}
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
+        service_account: "deploy@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
     - uses: hashicorp/setup-terraform@v3
-    - name: Deploy services
-      run: make -f Makefile.deploy deploy_services
-    - name: Deploy project
-      run: make -f Makefile.deploy deploy_project
-
-
+    - name: Deploy gcp project
+      run: make -f Makefile.deploy deploy-project
+    - name: Deploy actual services to the GCP project
+      run: make -f Makefile.deploy deploy-infra

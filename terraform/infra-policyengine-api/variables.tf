@@ -10,15 +10,13 @@ variable "region" {
 }
 
 variable "full_container_tag" {
-  description = "The container image tag for the full API. If not specified, defaults to 'desktop'"
+  description = "The container image tag for the full API"
   type        = string
-  default     = "desktop"
 }
 
 variable "simulation_container_tag" {
-  description = "The container image tag for the simulation API. If not specified, defaults to 'desktop'"
+  description = "The container image tag for the simulation API"
   type        = string
-  default     = "desktop"
 }
 
 variable "is_prod" {

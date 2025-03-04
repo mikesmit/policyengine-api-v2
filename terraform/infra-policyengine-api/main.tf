@@ -16,8 +16,8 @@ locals {
     cpu_limit = var.is_prod ? "2" : null
     memory_limit = var.is_prod ? "1024Mi" : null
 
-    full_api_image = "${var.region}-docker.pkg.dev/${var.project_id}/api-v2/policyengine-api-full@${var.full_container_tag}"
-    simulation_api_image = "${var.region}-docker.pkg.dev/${var.project_id}/api-v2/policyengine-api-simulation@${var.simulation_container_tag}"
+    full_api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-full:${var.full_container_tag}"
+    simulation_api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-simulation:${var.simulation_container_tag}"
 }
 
 provider "google" {
