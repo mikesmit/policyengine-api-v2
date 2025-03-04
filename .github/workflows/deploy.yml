@@ -84,7 +84,7 @@ jobs:
         workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
         service_account: "deploy@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
     - uses: hashicorp/setup-terraform@v3
-    - name: Deploy services
-      run: make -f Makefile.deploy deploy_services
-    - name: Deploy project
-      run: make -f Makefile.deploy deploy_project
+    - name: Deploy gcp project
+      run: make -f Makefile.deploy deploy-project
+    - name: Deploy actual services to the GCP project
+      run: make -f Makefile.deploy deploy-infra
