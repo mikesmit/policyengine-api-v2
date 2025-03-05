@@ -10,12 +10,5 @@ deploy-project:
 deploy-infra:
 	cd terraform/infra-policyengine-api && make -f Makefile.deploy deploy
 
-deploy: publish-docker deploy-project deploy-infra
-
-plan-deploy-infra:
-	cd terraform/infra-policyengine-api && make -f Makefile.deploy plan-deploy
-
-plan-deploy-project:
-	cd terraform/project-policyengine-api && make -f Makefile.deploy plan-deploy
-
-plan-deploy: plan-deploy-project plan-deploy-infra
+integ-test:
+	cd projects/policyengine-api-full-integ && make -f Makefile.deploy integ-test FULL_API_URL=${FULL_API_URL} ACCESS_TOKEN=${ACCESS_TOKEN}
