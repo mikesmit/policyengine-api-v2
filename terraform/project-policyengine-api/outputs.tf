@@ -28,6 +28,11 @@ output "deploy_service_account_email" {
     description = "Service account for deploying to the project"
 }
 
+output "tester_service_account_email" {
+    value = google_service_account.tester.email
+    description = "Service account for running tests"
+}
+
 output "docker_repository_namespace" {
     value = "${google_artifact_registry_repository.docker_repo.location}-docker.pkg.dev/${module.project.project_id}/${google_artifact_registry_repository.docker_repo.name}"
 }
