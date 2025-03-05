@@ -70,13 +70,17 @@ resource "google_project_iam_member" "deploy_service_account_roles" {
   member = "serviceAccount:${google_service_account.deploy.email}"
 }
 
+resource "google_service_account" "tester" {
+  project = module.project.project_id
+  account_id = "tester"
+  description = "Service account for running integration tests"
+}
 
 #Look up the default compute account so we can add back in permissions.
 data "google_service_account" "default_compute" {
   account_id = "${module.project.project_number}-compute@developer.gserviceaccount.com"
   depends_on = [ module.project]
 }
-
 
 
 #Give the detault compute account the roles required to build and store artifacts.
@@ -158,7 +162,8 @@ EOT
 resource "google_service_account_iam_member" "github_impersonate_permissions" {
   for_each = { 
     build = google_service_account.build.name, 
-    deploy = google_service_account.deploy.name}
+    deploy = google_service_account.deploy.name,
+    test = google_service_account.tester.name}
   service_account_id = each.value
   role               = "roles/iam.serviceAccountTokenCreator"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
