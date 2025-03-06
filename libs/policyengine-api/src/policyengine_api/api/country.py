@@ -361,7 +361,7 @@ class PolicyEngineCountry:
         start_instant: Annotated[str, "YYYY-MM-DD"]
         end_instant: Annotated[str, "YYYY-MM-DD"]
         start_instant, end_instant = time_period.split(".")
-        parameter: Parameter = get_parameter(system.parameters, parameter_name)
+        parameter: CoreParameter = get_parameter(system.parameters, parameter_name)
 
         # Determine the appropriate type for the value
         node_type = type(parameter.values_list[-1].value)
