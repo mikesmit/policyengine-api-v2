@@ -67,32 +67,57 @@ class PolicyEngineCountry:
         self.tax_benefit_system: TaxBenefitSystem = (
             self.country_package.CountryTaxBenefitSystem()
         )
-        self._build_metadata()
+        self.metadata: MetadataModule = self._build_metadata(
+            country_id=self.country_id,
+            tax_benefit_system=self.tax_benefit_system,
+            country_package_name=self.country_package_name,
+        )
 
-    def _build_metadata(self):
-        self.metadata: MetadataModule = MetadataModule(
-            variables=self._build_variables(),
-            parameters=self._build_parameters(),
-            entities=self._build_entities(),
-            variableModules=self._build_variable_modules(),
-            economy_options=self._build_economy_options(),
-            current_law_id=CURRENT_LAW_IDS[self.country_id],
-            basicInputs=self.tax_benefit_system.basic_inputs,
-            modeled_policies=self._build_modeled_policies(),
+    def _build_metadata(
+        self,
+        country_id: str,
+        tax_benefit_system: TaxBenefitSystem,
+        country_package_name: str,
+    ) -> MetadataModule:
+        return MetadataModule(
+            variables=self._build_variables(
+                tax_benefit_system=tax_benefit_system
+            ),
+            parameters=self._build_parameters(
+                tax_benefit_system=tax_benefit_system
+            ),
+            entities=self._build_entities(
+                tax_benefit_system=tax_benefit_system
+            ),
+            variableModules=self._build_variable_modules(
+                tax_benefit_system=tax_benefit_system
+            ),
+            economy_options=self._build_economy_options(country_id=country_id),
+            current_law_id=CURRENT_LAW_IDS[country_id],
+            basicInputs=tax_benefit_system.basic_inputs,
+            modeled_policies=self._build_modeled_policies(
+                tax_benefit_system=tax_benefit_system
+            ),
             version=pkg_resources.get_distribution(
-                self.country_package_name
+                country_package_name
             ).version,
         )
 
-    def _build_economy_options(self) -> EconomyOptions:
-        regions: list[Region] = self._build_regions(self.country_id)
+    def _build_economy_options(
+        self, country_id: str, tax_benefit_system: TaxBenefitSystem
+    ) -> EconomyOptions:
+        regions: list[Region] = self._build_regions(
+            country_id=country_id, tax_benefit_system=tax_benefit_system
+        )
         time_periods: list[TimePeriod] = self._build_time_periods(
-            self.country_id
+            country_id=country_id, tax_benefit_system=tax_benefit_system
         )
         return EconomyOptions(region=regions, time_period=time_periods)
 
-    def _build_variables(self) -> dict[str, Variable]:
-        variables: dict[str, CoreVariable] = self.tax_benefit_system.variables
+    def _build_variables(
+        self, tax_benefit_system: TaxBenefitSystem
+    ) -> dict[str, Variable]:
+        variables: dict[str, CoreVariable] = tax_benefit_system.variables
         variable_data = {}
         for variable_name, variable in variables.items():
             variable_data[variable_name] = Variable(
@@ -116,7 +141,7 @@ class PolicyEngineCountry:
         return variable_data
 
     def _build_parameters(
-        self,
+        self, tax_benefit_system: TaxBenefitSystem
     ) -> dict[str, ParameterScaleItem | ParameterNode | Parameter]:
         APPROVED_TOP_LEVEL_FOLDERS = ["gov"]
 
@@ -125,7 +150,7 @@ class PolicyEngineCountry:
             | CoreParameterNode
             | CoreParameterScaleBracket
             | CoreParameterScale
-        ] = self.tax_benefit_system.parameters
+        ] = tax_benefit_system.parameters
         parameter_data = {}
         for parameter in parameters.get_descendants():
 
@@ -150,16 +175,18 @@ class PolicyEngineCountry:
                         parameter
                     )
                 case p if isinstance(parameter, CoreParameterNode):
-                    parameter_data[parameter.name] = self._build_parameter_node(
-                        parameter
+                    parameter_data[parameter.name] = (
+                        self._build_parameter_node(parameter)
                     )
                 case p:
                     continue
 
         return parameter_data
 
-    def _build_entities(self) -> dict[str, Entity]:
-        entities: list[CoreEntity] = self.tax_benefit_system.entities
+    def _build_entities(
+        self, tax_benefit_system: TaxBenefitSystem
+    ) -> dict[str, Entity]:
+        entities: list[CoreEntity] = tax_benefit_system.entities
         data = {}
 
         for entity in entities:
@@ -186,9 +213,11 @@ class PolicyEngineCountry:
 
         return data
 
-    def _build_variable_modules(self) -> dict[str, VariableModule]:
+    def _build_variable_modules(
+        self, tax_benefit_system: TaxBenefitSystem
+    ) -> dict[str, VariableModule]:
         variable_modules: dict[str, dict[str, Any]] = (
-            self.tax_benefit_system.variable_module_metadata
+            tax_benefit_system.variable_module_metadata
         )
         modules = {}
         for module_path, module in variable_modules.items():
@@ -199,11 +228,11 @@ class PolicyEngineCountry:
             )
         return modules
 
-    def _build_modeled_policies(self) -> ModeledPolicies | None:
-        if self.tax_benefit_system.modelled_policies:
-            return ModeledPolicies(
-                **self.tax_benefit_system.modelled_policies
-            )
+    def _build_modeled_policies(
+        self, tax_benefit_system: TaxBenefitSystem
+    ) -> ModeledPolicies | None:
+        if tax_benefit_system.modelled_policies:
+            return ModeledPolicies(**tax_benefit_system.modelled_policies)
         return None
 
     def _build_parameter_scale(
@@ -262,7 +291,7 @@ class PolicyEngineCountry:
             household=parameter.metadata.get("household", True),
         )
 
-    def _build_regions(self, country_id) -> list[Region]:
+    def _build_regions(self, country_id: str) -> list[Region]:
         cwd = Path(__file__).parent
         region_file_path = cwd.joinpath(
             f"data/regions/{country_id}_regions.json"
@@ -271,7 +300,7 @@ class PolicyEngineCountry:
             regions = json.load(region_file)
         return [Region(**region) for region in regions]
 
-    def _build_time_periods(self, country_id) -> list[TimePeriod]:
+    def _build_time_periods(self, country_id: str) -> list[TimePeriod]:
         cwd = Path(__file__).parent
         country_time_period_path = cwd.joinpath(
             f"data/time_periods/{country_id}_time_periods.json"
