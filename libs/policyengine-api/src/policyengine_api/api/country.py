@@ -69,55 +69,45 @@ class PolicyEngineCountry:
         )
         self.metadata: MetadataModule = self._build_metadata(
             country_id=self.country_id,
-            tax_benefit_system=self.tax_benefit_system,
+            system=self.tax_benefit_system,
             country_package_name=self.country_package_name,
         )
 
     def _build_metadata(
         self,
         country_id: str,
-        tax_benefit_system: TaxBenefitSystem,
+        system: TaxBenefitSystem,
         country_package_name: str,
     ) -> MetadataModule:
         return MetadataModule(
-            variables=self._build_variables(
-                tax_benefit_system=tax_benefit_system
-            ),
-            parameters=self._build_parameters(
-                tax_benefit_system=tax_benefit_system
-            ),
-            entities=self._build_entities(
-                tax_benefit_system=tax_benefit_system
-            ),
-            variableModules=self._build_variable_modules(
-                tax_benefit_system=tax_benefit_system
-            ),
+            variables=self._build_variables(system=system),
+            parameters=self._build_parameters(system=system),
+            entities=self._build_entities(system=system),
+            variableModules=self._build_variable_modules(system=system),
             economy_options=self._build_economy_options(country_id=country_id),
             current_law_id=CURRENT_LAW_IDS[country_id],
-            basicInputs=tax_benefit_system.basic_inputs,
-            modeled_policies=self._build_modeled_policies(
-                tax_benefit_system=tax_benefit_system
-            ),
+            basicInputs=system.basic_inputs,
+            modeled_policies=self._build_modeled_policies(system=system),
             version=pkg_resources.get_distribution(
                 country_package_name
             ).version,
         )
 
     def _build_economy_options(
-        self, country_id: str, tax_benefit_system: TaxBenefitSystem
+        self, country_id: str, system: TaxBenefitSystem
     ) -> EconomyOptions:
         regions: list[Region] = self._build_regions(
-            country_id=country_id, tax_benefit_system=tax_benefit_system
+            country_id=country_id, system=system
         )
         time_periods: list[TimePeriod] = self._build_time_periods(
-            country_id=country_id, tax_benefit_system=tax_benefit_system
+            country_id=country_id, system=system
         )
         return EconomyOptions(region=regions, time_period=time_periods)
 
     def _build_variables(
-        self, tax_benefit_system: TaxBenefitSystem
+        self, system: TaxBenefitSystem
     ) -> dict[str, Variable]:
-        variables: dict[str, CoreVariable] = tax_benefit_system.variables
+        variables: dict[str, CoreVariable] = system.variables
         variable_data = {}
         for variable_name, variable in variables.items():
             variable_data[variable_name] = Variable(
@@ -141,7 +131,7 @@ class PolicyEngineCountry:
         return variable_data
 
     def _build_parameters(
-        self, tax_benefit_system: TaxBenefitSystem
+        self, system: TaxBenefitSystem
     ) -> dict[str, ParameterScaleItem | ParameterNode | Parameter]:
         APPROVED_TOP_LEVEL_FOLDERS = ["gov"]
 
@@ -150,7 +140,7 @@ class PolicyEngineCountry:
             | CoreParameterNode
             | CoreParameterScaleBracket
             | CoreParameterScale
-        ] = tax_benefit_system.parameters
+        ] = system.parameters
         parameter_data = {}
         for parameter in parameters.get_descendants():
 
@@ -183,10 +173,8 @@ class PolicyEngineCountry:
 
         return parameter_data
 
-    def _build_entities(
-        self, tax_benefit_system: TaxBenefitSystem
-    ) -> dict[str, Entity]:
-        entities: list[CoreEntity] = tax_benefit_system.entities
+    def _build_entities(self, system: TaxBenefitSystem) -> dict[str, Entity]:
+        entities: list[CoreEntity] = system.entities
         data = {}
 
         for entity in entities:
@@ -214,10 +202,10 @@ class PolicyEngineCountry:
         return data
 
     def _build_variable_modules(
-        self, tax_benefit_system: TaxBenefitSystem
+        self, system: TaxBenefitSystem
     ) -> dict[str, VariableModule]:
         variable_modules: dict[str, dict[str, Any]] = (
-            tax_benefit_system.variable_module_metadata
+            system.variable_module_metadata
         )
         modules = {}
         for module_path, module in variable_modules.items():
@@ -229,10 +217,10 @@ class PolicyEngineCountry:
         return modules
 
     def _build_modeled_policies(
-        self, tax_benefit_system: TaxBenefitSystem
+        self, system: TaxBenefitSystem
     ) -> ModeledPolicies | None:
-        if tax_benefit_system.modelled_policies:
-            return ModeledPolicies(**tax_benefit_system.modelled_policies)
+        if system.modelled_policies:
+            return ModeledPolicies(**system.modelled_policies)
         return None
 
     def _build_parameter_scale(
