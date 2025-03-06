@@ -33,6 +33,7 @@ from policyengine_api.api.models.metadata.parameter import (
     Parameter,
 )
 from policyengine_api.api.models.metadata.metadata_module import MetadataModule
+from policyengine_api.api.models.periods import ISO8601Date
 from typing import Union, Any
 
 from policyengine_core.entities import Entity as CoreEntity
@@ -42,21 +43,14 @@ from policyengine_core.parameters import (
     ParameterScale as CoreParameterScale,
     ParameterScaleBracket as CoreParameterScaleBracket,
 )
-from typing import Annotated
 from policyengine_core.parameters import get_parameter
 import pkg_resources
 from copy import deepcopy
-from policyengine_core.model_api import Reform, Enum
+from policyengine_core.model_api import Enum
 from policyengine_core.periods import instant
 import dpath
 from pathlib import Path
 import math
-from uuid import UUID, uuid4
-import policyengine_uk
-import policyengine_us
-import policyengine_canada
-import policyengine_ng
-import policyengine_il
 
 
 class PolicyEngineCountry:
@@ -94,13 +88,13 @@ class PolicyEngineCountry:
         )
 
     def _build_economy_options(
-        self, country_id: str, system: TaxBenefitSystem
+        self, country_id: str
     ) -> EconomyOptions:
         regions: list[Region] = self._build_regions(
-            country_id=country_id, system=system
+            country_id=country_id
         )
         time_periods: list[TimePeriod] = self._build_time_periods(
-            country_id=country_id, system=system
+            country_id=country_id
         )
         return EconomyOptions(region=regions, time_period=time_periods)
 
@@ -358,10 +352,12 @@ class PolicyEngineCountry:
         value: Any,
     ) -> None:
         """Update a specific parameter in the tax benefit system."""
-        start_instant: Annotated[str, "YYYY-MM-DD"]
-        end_instant: Annotated[str, "YYYY-MM-DD"]
+        start_instant: ISO8601Date
+        end_instant: ISO8601Date
         start_instant, end_instant = time_period.split(".")
-        parameter: CoreParameter = get_parameter(system.parameters, parameter_name)
+        parameter: CoreParameter = get_parameter(
+            system.parameters, parameter_name
+        )
 
         # Determine the appropriate type for the value
         node_type = type(parameter.values_list[-1].value)
