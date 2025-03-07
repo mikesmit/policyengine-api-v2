@@ -1,36 +1,54 @@
 from pydantic import BaseModel, RootModel, Field
 from typing import Union, Any, Optional
 
+example_people_us = {
+    "you": {"age": {"2024": 40}, "employment_income": {"2024": 29000}},
+    "your first dependent": {
+        "age": {"2024": 5},
+        "employment_income": {"2024": 0},
+        "is_tax_unit_dependent": {"2024": True},
+    },
+}
 
-example_household_us = {
-    "people": {
-        "you": {"age": {"2024": 40}, "employment_income": {"2024": 29000}},
-        "your first dependent": {
-            "age": {"2024": 5},
-            "employment_income": {"2024": 0},
-            "is_tax_unit_dependent": {"2024": True},
-        },
+example_families_us = {
+    "your family": {"members": ["you", "your first dependent"]}
+}
+
+example_spm_units_us = {
+    "your household": {"members": ["you", "your first dependent"]}
+}
+
+example_tax_units_us = {
+    "your tax unit": {
+        "members": ["you", "your first dependent"],
+        "eitc": {"2024": 39_000},
+        "ctc": {"2024": None},
+    }
+}
+
+example_households_us = {
+    "your household": {
+        "members": ["you", "your first dependent"],
+        "state_name": {"2024": "CA"},
+    }
+}
+
+example_marital_units_us = {
+    "your marital unit": {"members": ["you"]},
+    "your first dependent's marital unit": {
+        "members": ["your first dependent"],
+        "marital_unit_id": {"2024": 1},
     },
-    "families": {"your family": {"members": ["you", "your first dependent"]}},
-    "spm_units": {
-        "your household": {"members": ["you", "your first dependent"]}
-    },
-    "tax_units": {
-        "your tax unit": {"members": ["you", "your first dependent"]}
-    },
-    "households": {
-        "your household": {
-            "members": ["you", "your first dependent"],
-            "state_name": {"2024": "CA"},
-        }
-    },
-    "marital_units": {
-        "your marital unit": {"members": ["you"]},
-        "your first dependent's marital unit": {
-            "members": ["your first dependent"],
-            "marital_unit_id": {"2024": 1},
-        },
-    },
+}
+
+
+example_household_input_us = {
+    "people": example_people_us,
+    "families": example_families_us,
+    "spm_units": example_spm_units_us,
+    "tax_units": example_tax_units_us,
+    "households": example_households_us,
+    "marital_units": example_marital_units_us,
 }
 
 
@@ -51,16 +69,26 @@ class HouseholdEntity(RootModel):
 
 
 class HouseholdGeneric(BaseModel):
-    households: dict[str, HouseholdEntity]
-    people: dict[str, HouseholdEntity]
-    axes: Optional[dict[str, HouseholdAxes]] = {}
+    households: dict[str, HouseholdEntity] = Field(
+        examples=[example_households_us]
+    )
+    people: dict[str, HouseholdEntity] = Field(examples=[example_people_us])
+    axes: Optional[dict[str, HouseholdAxes]] = None
 
 
 class HouseholdUS(HouseholdGeneric):
-    families: Optional[dict[str, HouseholdEntity]] = {}
-    spm_units: Optional[dict[str, HouseholdEntity]] = {}
-    tax_units: Optional[dict[str, HouseholdEntity]] = {}
-    marital_units: Optional[dict[str, HouseholdEntity]] = {}
+    families: Optional[dict[str, HouseholdEntity]] = Field(
+        default={}, examples=[example_families_us]
+    )
+    spm_units: Optional[dict[str, HouseholdEntity]] = Field(
+        default={}, examples=[example_spm_units_us]
+    )
+    tax_units: Optional[dict[str, HouseholdEntity]] = Field(
+        default={}, examples=[example_tax_units_us]
+    )
+    marital_units: Optional[dict[str, HouseholdEntity]] = Field(
+        default={}, examples=[example_marital_units_us]
+    )
 
 
 class HouseholdUK(HouseholdGeneric):

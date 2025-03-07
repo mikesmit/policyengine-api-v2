@@ -1,8 +1,10 @@
 import importlib
 import json
+import logging
 from policyengine_core.taxbenefitsystems import TaxBenefitSystem
 from policyengine_core.variables import Variable as CoreVariable
 from policyengine_core.simulations import Simulation
+from policyengine_core.populations import Population
 from policyengine_api.api.utils.constants import CURRENT_LAW_IDS
 from policyengine_api.api.utils.json import get_safe_json
 from policyengine_api.api.utils.metadata import (
@@ -35,6 +37,7 @@ from policyengine_api.api.models.metadata.parameter import (
 from policyengine_api.api.models.metadata.metadata_module import MetadataModule
 from policyengine_api.api.models.periods import ISO8601Date
 from typing import Union, Any
+from numpy.typing import ArrayLike
 
 from policyengine_core.entities import Entity as CoreEntity
 from policyengine_core.parameters import (
@@ -51,6 +54,10 @@ from policyengine_core.periods import instant
 import dpath
 from pathlib import Path
 import math
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PolicyEngineCountry:
@@ -87,12 +94,8 @@ class PolicyEngineCountry:
             ).version,
         )
 
-    def _build_economy_options(
-        self, country_id: str
-    ) -> EconomyOptions:
-        regions: list[Region] = self._build_regions(
-            country_id=country_id
-        )
+    def _build_economy_options(self, country_id: str) -> EconomyOptions:
+        regions: list[Region] = self._build_regions(country_id=country_id)
         time_periods: list[TimePeriod] = self._build_time_periods(
             country_id=country_id
         )
@@ -300,20 +303,20 @@ class PolicyEngineCountry:
 
     def calculate(
         self,
-        household_model: HouseholdUS | HouseholdUK | HouseholdGeneric,
+        household: HouseholdUS | HouseholdUK | HouseholdGeneric,
         reform: Union[dict, None] = None,
     ) -> HouseholdGeneric | HouseholdUK | HouseholdUS:
         system: TaxBenefitSystem = self._prepare_tax_benefit_system(reform)
-        household: dict[str, Any] = household_model.model_dump()
+        household_raw: dict[str, Any] = household.model_dump()
 
         simulation: Simulation = self.country_package.Simulation(
             tax_benefit_system=system,
-            situation=household,
+            situation=household_raw,
         )
 
-        household_result: dict[str, Any] = deepcopy(household)
+        household_result: dict[str, Any] = deepcopy(household_raw)
         requested_computations: list[tuple[str, str, str, str]] = (
-            get_requested_computations(household)
+            get_requested_computations(household_raw)
         )
 
         for computation in requested_computations:
@@ -392,9 +395,9 @@ class PolicyEngineCountry:
 
         try:
             variable: Variable = system.get_variable(variable_name)
-            result: Any = simulation.calculate(variable_name, period)
+            result: ArrayLike = simulation.calculate(variable_name, period)
 
-            if "axes" in household:
+            if getattr(household, "axes", None):
                 self._handle_axes_computation(
                     household,
                     entity_plural,
@@ -472,12 +475,12 @@ class PolicyEngineCountry:
         entity_id,
         variable_name: str,
         period,
-        result,
+        result: ArrayLike,
         variable: Variable,
     ):
         """Handle computation for a single entity."""
-        population = simulation.get_population(entity_plural)
-        entity_index = population.get_index(entity_id)
+        population: Population = simulation.get_population(entity_plural)
+        entity_index: int = population.get_index(entity_id)
 
         # Format the result based on variable type
         entity_result = self._format_result(result, entity_index, variable)
@@ -487,7 +490,9 @@ class PolicyEngineCountry:
             period
         ] = entity_result
 
-    def _format_result(self, result, entity_index, variable: Variable):
+    def _format_result(
+        self, result: ArrayLike, entity_index, variable: Variable
+    ) -> Any:
         """Format calculation result based on variable type."""
         if variable.value_type == Enum:
             return result.decode()[entity_index].name
