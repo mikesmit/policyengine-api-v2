@@ -18,14 +18,15 @@ env:
   BUILD_TAG: ${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
   COMMIT_TAG: ${{ github.sha }}
 jobs:
+  #api build steps are separated so they can run in parallel.
   build_simulation_api_image:
     # Any runner supporting Node 20 or newer
     runs-on: ubuntu-latest
     environment: beta
 
-    # Add "id-token" with the intended permissions.
     permissions:
       contents: "read"
+      # Required to auth against gcp
       id-token: "write"
 
     steps:
@@ -56,6 +57,7 @@ jobs:
     # Add "id-token" with the intended permissions.
     permissions:
       contents: "read"
+      #required to auth against GCP
       id-token: "write"
 
     steps:
@@ -71,27 +73,74 @@ jobs:
         version: ">= 363.0.0"
     - name: Build application
       run: make -f Makefile.deploy publish-full-api-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
+
   deploy_beta:
     needs: [build_simulation_api_image, build_full_api_image]
     runs-on: ubuntu-latest
+    outputs:
+      #This is required for the test step so it can authenticate and connect to
+      #the beta endpoint
+      full_api_url: ${{ steps.deploy_infra.outputs.full_api_url }}
     environment: beta
     env:
-        TF_VAR_stage: beta
-        TF_VAR_is_prod: false
+      TF_VAR_stage: beta
+      TF_VAR_is_prod: false
     
     permissions:
       contents: "read"
+      #required to auth against GCP
       id-token: "write"
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
-    - uses: "google-github-actions/auth@v2"
+    - name: Authenticate as deploy SA in GCP
+      uses: "google-github-actions/auth@v2"
       with:
         workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
         service_account: "deploy@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
     - uses: hashicorp/setup-terraform@v3
-    - name: Deploy gcp project
+    - name: Create/update GCP project
       run: make -f Makefile.deploy deploy-project
-    - name: Deploy actual services to the GCP project
-      run: make -f Makefile.deploy deploy-infra
+    - name: Deploy services into the GCP project
+      id: deploy_infra
+      run: |
+        make -f Makefile.deploy deploy-infra
+        #parse the resulting output variables and make them outputs of this step.
+        FULL_API_URL=$(cat terraform/infra-policyengine-api/terraform_output.json | jq -r .full_api_url.value)
+        echo "exporting full_api_url ${FULL_API_URL}"
+        echo "full_api_url=${FULL_API_URL}" >> "$GITHUB_OUTPUT"
+
+  integ_test_beta:
+    needs: [deploy_beta]
+    runs-on: ubuntu-latest
+    environment: beta
+
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.11"
+    - name: Set up poetry
+      run: uv pip install poetry --system
+    - name: Auth as tester SA in GCP
+      id: get-id-token
+      uses: "google-github-actions/auth@v2"
+      with:
+        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
+        service_account: "tester@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
+        token_format: "id_token"
+        id_token_audience: ${{ needs.deploy_beta.outputs.full_api_url }}
+        id_token_include_email: true
+    - name: Mask id token to prevent accidental leak
+      run: echo "::add-mask::${{steps.get-id-token.outputs.id_token}}"
+    - name: run integ tests against deployed API
+      run: make -f Makefile.deploy integ-test  ACCESS_TOKEN=${{steps.get-id-token.outputs.id_token}} FULL_API_URL=${{needs.deploy_beta.outputs.full_api_url }}
