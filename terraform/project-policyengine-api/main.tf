@@ -38,7 +38,9 @@ module "project" {
     "run.googleapis.com",
     # required to deploy terraform
     "cloudresourcemanager.googleapis.com",
-    "serviceusage.googleapis.com"]
+    "serviceusage.googleapis.com",
+    # to orchestrate our simulation runs
+    "workflows.googleapis.com"]
 }
 
 resource "google_storage_bucket" "logs" {
