@@ -1,9 +1,12 @@
 plan-deploy: .terraform
 	terraform plan -input=false
 
+state: .terraform
+	terraform output -json
+
 deploy: .terraform
 	terraform apply -input=false -auto-approve
-
+	terraform output -json > terraform_output.json
 
 .terraform:
 	terraform init -backend-config="bucket=${TF_BACKEND_bucket}"
