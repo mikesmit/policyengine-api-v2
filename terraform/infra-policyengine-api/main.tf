@@ -5,13 +5,9 @@ locals {
     members = var.is_prod ? ["allUsers"] : []
     # keep one instance running at all times in production for responsiveness.
     # in other environments don't waste the money
-    service_scaling = var.is_prod ? {
-        min_instance_count = 1
-        max_instance_count = 10 # This seems like more than enough (800 concurrent requests)
-    } : {
-        max_instance_count = 1
-    }
-
+    min_instance_count = var.is_prod ? 1 : 0
+    max_instance_count = var.is_prod ? 10 : 1
+    
     # minimum instance specs only apply in production
     cpu_limit = var.is_prod ? "2" : null
     memory_limit = var.is_prod ? "1024Mi" : null
@@ -24,57 +20,85 @@ provider "google" {
   project = var.project_id
 }
 
-# https://github.com/GoogleCloudPlatform/terraform-google-cloud-run/tree/main/modules/v2
-module "cloud_run_full_api" {
-  source  = "GoogleCloudPlatform/cloud-run/google//modules/v2"
-  version = "~> 0.16"
-
-  service_name = "api-full"
-  project_id   = var.project_id
-  location     = "${var.region}"
-  members     = local.members
-
-  cloud_run_deletion_protection = false
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service
+resource "google_cloud_run_v2_service" "cloud_run_full_api" {
+  provider = google-beta
+  project = var.project_id
+  name     = "api-full"
+  location = "us-central1"
+  deletion_protection = false
+  ingress = "INGRESS_TRAFFIC_ALL"
 
   description = "PolicyEngine Full API"
 
-  max_instance_request_concurrency =  local.max_instance_request_concurrency
-  containers = [
-    {
-      container_image = local.full_api_image
-      limits = {
-        # as per the cost estimate we did for APIs.
-        cpu    = local.cpu_limit
-        memory = local.memory_limit
+  template {
+    containers {
+      image = local.full_api_image
+      resources {
+        limits = {
+          cpu    = local.cpu_limit
+          memory = local.memory_limit
+        }
       }
     }
-  ]
+    scaling {
+      min_instance_count = local.min_instance_count
+      max_instance_count = local.max_instance_count
+    }
+  }
 }
 
-module "cloud_run_simulation_api" {
-  source  = "GoogleCloudPlatform/cloud-run/google//modules/v2"
-  version = "~> 0.16"
+data "google_iam_policy" "private" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com",
+    ]
+  }
+}
 
-  service_name = "api-simulation"
-  project_id   = var.project_id
-  location     = "${var.region}"
-  members     = local.members
+resource "google_cloud_run_service_iam_policy" "full_api_test_access" {
+  location = google_cloud_run_v2_service.cloud_run_full_api.location
+  project  = google_cloud_run_v2_service.cloud_run_full_api.project
+  service  = google_cloud_run_v2_service.cloud_run_full_api.name
 
-  cloud_run_deletion_protection = false
+  policy_data = data.google_iam_policy.private.policy_data
+}
+
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service
+resource "google_cloud_run_v2_service" "cloud_run_simulation_api" {
+  provider = google-beta
+  project = var.project_id
+  name     = "api-simulation"
+  location = "us-central1"
+  deletion_protection = false
+  ingress = "INGRESS_TRAFFIC_ALL"
 
   description = "PolicyEngine Simulation API"
 
-  max_instance_request_concurrency =  local.max_instance_request_concurrency
-  containers = [
-    {
-      container_image = local.simulation_api_image
-      limits = {
-        # as per the cost estimate we did for APIs.
-        cpu    = local.cpu_limit
-        memory = local.memory_limit
+  template {
+    containers {
+      image = local.simulation_api_image
+      resources {
+        limits = {
+          cpu    = 1
+          memory =  "4Gi"
+        }
       }
     }
-  ]
+    scaling {
+      min_instance_count = local.min_instance_count
+      max_instance_count = local.max_instance_count
+    }
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "simulation_api_test_access" {
+  location = google_cloud_run_v2_service.cloud_run_simulation_api.location
+  project  = google_cloud_run_v2_service.cloud_run_simulation_api.project
+  service  = google_cloud_run_v2_service.cloud_run_simulation_api.name
+
+  policy_data = data.google_iam_policy.private.policy_data
 }
 
 # Create a workflow
@@ -90,12 +114,13 @@ resource "google_workflows_workflow" "simulation_workflow" {
     env = var.is_prod ? "prod" : "test"
   }
   user_env_vars = {
-    service_url = "${module.cloud_run_simulation_api.service_uri}/simulate"
+    service_url = "${google_cloud_run_v2_service.cloud_run_simulation_api.uri}/simulate"
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 
   depends_on = [google_project_service.workflows_api]
 }
+
 # Create a dedicated service account for workflow
 resource "google_service_account" "workflow_sa" {
   account_id   = "simulation-workflows-sa"
