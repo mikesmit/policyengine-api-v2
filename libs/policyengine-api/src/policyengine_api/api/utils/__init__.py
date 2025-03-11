@@ -6,3 +6,4 @@ from .constants import (
     __version__,
 )
 from .metadata import parse_enum_possible_values, parse_default_value
+from .computation_tree import generate_computation_tree

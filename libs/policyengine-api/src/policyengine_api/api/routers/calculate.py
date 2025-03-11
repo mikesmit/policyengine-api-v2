@@ -22,6 +22,7 @@ async def calculate(
         HouseholdGeneric | HouseholdUK | HouseholdUS,
         Body(examples=[example_household_input_us], embed=True),
     ],
+    enable_ai_explainer: bool = False,
 ) -> CalculateResponse:
 
     # Household models above currently conflict with models defined in
@@ -30,7 +31,9 @@ async def calculate(
     country = COUNTRIES.get(country_id.value)
 
     result: HouseholdGeneric | HouseholdUK | HouseholdUS = country.calculate(
-        household=household, reform=None
+        household=household,
+        reform=None,
+        enable_ai_explainer=enable_ai_explainer,
     )
 
     return CalculateResponse(result=result, computation_tree_uuid=None)
