@@ -313,6 +313,7 @@ class PolicyEngineCountry:
             tax_benefit_system=system,
             situation=household_raw,
         )
+        simulation.trace = True # Enable computation tree tracing
 
         household_result: dict[str, Any] = deepcopy(household_raw)
         requested_computations: list[tuple[str, str, str, str]] = (
