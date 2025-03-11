@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Body
+from typing import Any
 from policyengine_api.api.enums import COUNTRY_ID
 from policyengine_api.api.models.household import (
     HouseholdUS,
@@ -6,6 +7,7 @@ from policyengine_api.api.models.household import (
     HouseholdGeneric,
     example_household_input_us,
 )
+from policyengine_api.api.models.endpoints.calculate import CalculateResponse
 from policyengine_api.api.country import COUNTRIES
 from typing import Annotated
 
@@ -20,7 +22,7 @@ async def calculate(
         HouseholdGeneric | HouseholdUK | HouseholdUS,
         Body(examples=[example_household_input_us], embed=True),
     ],
-) -> HouseholdGeneric | HouseholdUK | HouseholdUS:
+) -> CalculateResponse:
 
     # Household models above currently conflict with models defined in
     # household/household.py; the household routes will be brought in
@@ -30,4 +32,5 @@ async def calculate(
     result: HouseholdGeneric | HouseholdUK | HouseholdUS = country.calculate(
         household=household, reform=None
     )
-    return result
+
+    return CalculateResponse(result=result, computation_tree_uuid=None)
