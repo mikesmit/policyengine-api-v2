@@ -31,6 +31,28 @@ resource "google_cloud_run_v2_service" "cloud_run_full_api" {
           memory = var.is_prod ? "1024Mi" : null
         }
       }
+      startup_probe {
+        initial_delay_seconds = 0
+        timeout_seconds = 1
+        period_seconds = 5
+        failure_threshold = 4
+        http_get {
+          path = "/ping/started"
+        }
+      }
+      # Only include liveness_probe in production environment so we don't
+      # waste money running beta containers.
+      dynamic "liveness_probe" {
+        for_each = var.is_prod ? [1] : []
+        content {
+          period_seconds = 30 
+          timeout_seconds = 1 
+          failure_threshold = 2
+          http_get {
+            path = "/ping/alive"
+          }
+        }
+      }
     }
     scaling {
       # always keep one instance hot in prod
