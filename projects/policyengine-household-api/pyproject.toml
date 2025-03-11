@@ -18,7 +18,8 @@ dependencies = [
     "policyengine-canada (>=0.96.2)",
     "policyengine-il (>=0.1.0)",
     "policyengine-ng (>=0.5.1)",
-    "numpy (>=1.26.4,<1.27.0)"
+    "numpy (>=1.26.4,<1.27.0)",
+    "google-cloud-storage (>=3.1.0)",
 ]
 
 
