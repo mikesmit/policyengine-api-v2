@@ -12,6 +12,10 @@ dev-api-simulation:
 	echo "Starting API (simulation) in dev mode"
 	cd projects/policyengine-api-simulation && make dev
 
+dev-api-household:
+	echo "Starting API (household) in dev mode"
+	cd projects/policyengine-household-api && make dev
+
 dev:
 	echo "Starting APIs (full+simulation) in dev mode"
 	make dev-api-full & make dev-api-simulation

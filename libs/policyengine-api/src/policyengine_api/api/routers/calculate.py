@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body
 from typing import Any
 from policyengine_api.api.enums import COUNTRY_ID
+from uuid import UUID
 from policyengine_api.api.models.household import (
     HouseholdUS,
     HouseholdUK,
@@ -20,9 +21,9 @@ async def calculate(
     country_id: COUNTRY_ID,
     household: Annotated[
         HouseholdGeneric | HouseholdUK | HouseholdUS,
-        Body(examples=[example_household_input_us], embed=True),
+        Body(examples=[example_household_input_us]),
     ],
-    enable_ai_explainer: bool = False,
+    enable_ai_explainer: Annotated[bool, Body()] = False,
 ) -> CalculateResponse:
 
     # Household models above currently conflict with models defined in
@@ -30,10 +31,16 @@ async def calculate(
     # line in later iteration
     country = COUNTRIES.get(country_id.value)
 
-    result: HouseholdGeneric | HouseholdUK | HouseholdUS = country.calculate(
+    result: HouseholdGeneric | HouseholdUK | HouseholdUS
+    computation_tree_uuid: UUID | None
+    result, computation_tree_uuid = country.calculate(
         household=household,
         reform=None,
         enable_ai_explainer=enable_ai_explainer,
     )
 
-    return CalculateResponse(result=result, computation_tree_uuid=None)
+    # Note - computation_tree_uuid will be either None or a random UUID until GCP
+    # uploading is added in a future PR
+    return CalculateResponse(
+        result=result, computation_tree_uuid=computation_tree_uuid
+    )
