@@ -1,12 +1,16 @@
 import importlib
 import json
 import logging
+from uuid import UUID, uuid4
 from policyengine_core.taxbenefitsystems import TaxBenefitSystem
 from policyengine_core.variables import Variable as CoreVariable
 from policyengine_core.simulations import Simulation
 from policyengine_core.populations import Population
 from policyengine_api.api.utils.constants import CURRENT_LAW_IDS
 from policyengine_api.api.utils.json import get_safe_json
+from policyengine_api.api.utils.computation_tree import (
+    generate_computation_tree,
+)
 from policyengine_api.api.utils.metadata import (
     parse_enum_possible_values,
     parse_default_value,
@@ -305,7 +309,8 @@ class PolicyEngineCountry:
         self,
         household: HouseholdUS | HouseholdUK | HouseholdGeneric,
         reform: Union[dict, None] = None,
-    ) -> HouseholdGeneric | HouseholdUK | HouseholdUS:
+        enable_ai_explainer: bool = False,
+    ) -> tuple[HouseholdGeneric | HouseholdUK | HouseholdUS, UUID]:
         system: TaxBenefitSystem = self._prepare_tax_benefit_system(reform)
         household_raw: dict[str, Any] = household.model_dump()
 
@@ -313,6 +318,8 @@ class PolicyEngineCountry:
             tax_benefit_system=system,
             situation=household_raw,
         )
+        if enable_ai_explainer:
+            simulation.trace = True  # Enable computation tree tracing
 
         household_result: dict[str, Any] = deepcopy(household_raw)
         requested_computations: list[tuple[str, str, str, str]] = (
@@ -324,11 +331,29 @@ class PolicyEngineCountry:
                 simulation, system, household_result, computation
             )
 
+            # Execute all household tracer operations
+
+        computation_tree_uuid = None
+        if enable_ai_explainer:
+            computation_tree: list[str] = generate_computation_tree(simulation)
+
+            # This line will be changed in future PR to provide actual UUID
+            computation_tree_uuid: UUID = uuid4()
+
         if self.country_id == "us":
-            return HouseholdUS.model_validate(household_result)
+            return (
+                HouseholdUS.model_validate(household_result),
+                computation_tree_uuid,
+            )
         if self.country_id == "uk":
-            return HouseholdUK.model_validate(household_result)
-        return HouseholdGeneric.model_validate(household_result)
+            return (
+                HouseholdUK.model_validate(household_result),
+                computation_tree_uuid,
+            )
+        return (
+            HouseholdGeneric.model_validate(household_result),
+            computation_tree_uuid,
+        )
 
     def _prepare_tax_benefit_system(
         self, reform: Union[dict, None] = None
