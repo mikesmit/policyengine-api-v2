@@ -310,7 +310,7 @@ class PolicyEngineCountry:
         household: HouseholdUS | HouseholdUK | HouseholdGeneric,
         reform: Union[dict, None] = None,
         enable_ai_explainer: bool = False,
-    ) -> HouseholdGeneric | HouseholdUK | HouseholdUS:
+    ) -> tuple[HouseholdGeneric | HouseholdUK | HouseholdUS, UUID]:
         system: TaxBenefitSystem = self._prepare_tax_benefit_system(reform)
         household_raw: dict[str, Any] = household.model_dump()
 
