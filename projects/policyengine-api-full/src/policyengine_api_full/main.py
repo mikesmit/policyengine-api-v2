@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from policyengine_api.fastapi.database import create_sqlite_engine
 from policyengine_api.fastapi import ping
+from policyengine_api.fastapi.health import HealthRegistry, HealthSystemReporter
 from .settings import get_settings, Environment
 from policyengine_api.fastapi.opentelemetry import (
     GCPLoggingInstrumentor,
@@ -49,7 +50,12 @@ initialize(
     jwt_audience=get_settings().jwt_audience,
 )
 
-ping.include_all_routers(app)
+health_registry = HealthRegistry()
+#TODO: we can use this to verify the db connection, etc.
+#For now, we don't register any probes and it will just report
+# healthy all the time.
+health_registry.register(HealthSystemReporter("general", {}))
+ping.include_all_routers(app, health_registry)
 
 #configure tracing and metrics
 GCPLoggingInstrumentor().instrument()
