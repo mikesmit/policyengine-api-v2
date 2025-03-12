@@ -7,7 +7,6 @@ from policyengine_core.variables import Variable as CoreVariable
 from policyengine_core.simulations import Simulation
 from policyengine_core.populations import Population
 from policyengine_api.api.utils.constants import CURRENT_LAW_IDS
-from policyengine_api.api.utils.google_cloud import GoogleCloudStorageManager
 from policyengine_api.api.utils.json import get_safe_json
 from policyengine_api.api.utils.computation_tree import (
     generate_computation_tree,
@@ -41,10 +40,6 @@ from policyengine_api.api.models.metadata.parameter import (
 )
 from policyengine_api.api.models.metadata.metadata_module import MetadataModule
 from policyengine_api.api.models.periods import ISO8601Date
-from policyengine_api.api.models.computation_tree import (
-    ComputationTree,
-    EntityDescription,
-)
 from typing import Union, Any
 from numpy.typing import ArrayLike
 
@@ -340,9 +335,10 @@ class PolicyEngineCountry:
 
         computation_tree_uuid = None
         if enable_ai_explainer:
-            computation_tree_uuid = self._store_computation_tree(
-                simulation, household_result
-            )
+            computation_tree: list[str] = generate_computation_tree(simulation)
+
+            # This line will be changed in future PR to provide actual UUID
+            computation_tree_uuid: UUID = uuid4()
 
         if self.country_id == "us":
             return (
@@ -518,30 +514,6 @@ class PolicyEngineCountry:
         household[entity_plural][entity_id][variable_name][
             period
         ] = entity_result
-
-    def _store_computation_tree(
-        self, simulation: Simulation, household: dict[str, Any]
-    ) -> UUID:
-        entity_description = EntityDescription.model_validate(
-            simulation.describe_entities()
-        )
-        log_lines: list[str] = generate_computation_tree(simulation)
-        uuid: UUID = uuid4()
-
-        computation_tree: ComputationTree = ComputationTree(
-            uuid=uuid,
-            country_id=self.country_id,
-            tree=log_lines,
-            entity_description=entity_description,
-        )
-
-        storage_manager = GoogleCloudStorageManager()
-        storage_manager.store(
-            uuid=uuid,
-            data=computation_tree,
-        )
-
-        return uuid
 
     def _format_result(
         self, result: ArrayLike, entity_index, variable: Variable
