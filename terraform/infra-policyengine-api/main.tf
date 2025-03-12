@@ -7,6 +7,19 @@ provider "google" {
   project = var.project_id
 }
 
+# Create a custom service account
+resource "google_service_account" "cloudrun_full_api" {
+  account_id   = "full-api"
+  display_name = "Cloud Run Service Account for Full API"
+}
+
+resource "google_project_iam_member" "deploy_service_account_roles" {
+  for_each = toset(["roles/monitoring.metricWriter", "roles/logging.logWriter", "roles/cloudtrace.agent"])
+  project = var.project_id
+  role = each.key
+  member = "serviceAccount:${google_service_account.cloudrun_full_api.email}"
+}
+
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service
 resource "google_cloud_run_v2_service" "cloud_run_full_api" {
   provider = google-beta
@@ -19,6 +32,7 @@ resource "google_cloud_run_v2_service" "cloud_run_full_api" {
   description = "PolicyEngine Full API"
 
   template {
+    service_account = google_service_account.cloudrun_full_api.email
     # Assumption from cost estimate.
     max_instance_request_concurrency = var.is_prod ? 80 : null
     containers {
@@ -153,3 +167,5 @@ resource "google_service_account" "workflow_sa" {
   account_id   = "simulation-workflows-sa"
   display_name = "Simulation Workflows Service Account"
 }
+
+

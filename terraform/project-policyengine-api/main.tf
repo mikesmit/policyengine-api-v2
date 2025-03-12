@@ -40,7 +40,10 @@ module "project" {
     "cloudresourcemanager.googleapis.com",
     "serviceusage.googleapis.com",
     # to orchestrate our simulation runs
-    "workflows.googleapis.com"]
+    "workflows.googleapis.com",
+    # to support tracelogs and metrics from our services
+    "cloudtrace.googleapis.com",
+    "monitoring.googleapis.com"]
 }
 
 resource "google_storage_bucket" "logs" {
