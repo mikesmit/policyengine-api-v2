@@ -157,7 +157,7 @@ resource "google_workflows_workflow" "simulation_workflow" {
     env = var.is_prod ? "prod" : "test"
   }
   user_env_vars = {
-    service_url = "${google_cloud_run_v2_service.cloud_run_simulation_api.uri}/simulate"
+    service_url = "${google_cloud_run_v2_service.cloud_run_simulation_api.uri}/simulate/economy/comparison"
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 }
