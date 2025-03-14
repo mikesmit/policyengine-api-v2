@@ -10,8 +10,9 @@ from policyengine.outputs.macro.comparison.calculate_economy_comparison import (
 def create_router():
     router = APIRouter()
 
-    @router.post("/simulate")
+    @router.post("/simulate/economy/comparison", response_model=EconomyComparison)
     async def simulate(parameters: SimulationOptions) -> EconomyComparison:
+        print(parameters)
         model = SimulationOptions.model_validate(parameters)
 
         simulation = Simulation(**model.model_dump())
