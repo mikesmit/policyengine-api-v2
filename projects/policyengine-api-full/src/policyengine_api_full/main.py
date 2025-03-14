@@ -39,7 +39,12 @@ async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
     yield
 
-app = FastAPI(lifespan=lifespan, title="policyengine-api-full", summary="External facing policyengineAPI containing all features")
+
+app = FastAPI(
+    lifespan=lifespan,
+    title="policyengine-api-full",
+    summary="External facing policyengineAPI containing all features",
+)
 
 # attach the api defined in the app package
 initialize(
@@ -51,7 +56,7 @@ initialize(
 
 ping.include_all_routers(app)
 
-#configure tracing and metrics
+# configure tracing and metrics
 GCPLoggingInstrumentor().instrument()
 FastAPIEnhancedInstrumenter().instrument(app)
 SQLAlchemyInstrumentor().instrument(
