@@ -43,7 +43,8 @@ resource = Resource.create(
 
 match (get_settings().environment):
     case Environment.DESKTOP:
-        export_ot_to_console(resource)
+        pass # Don't print opentelemetry to console- this makes it impossible to read the logs. Alternatively, do by uncommenting this line.
+        # export_ot_to_console(resource)
     case Environment.PRODUCTION:
         export_ot_to_gcp(resource)
     case value:
