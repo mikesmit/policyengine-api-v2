@@ -1,4 +1,4 @@
-name: Deploy to GCP
+name: Deploy
 
 on:
   push:
@@ -10,22 +10,26 @@ concurrency:
 
 jobs:
   build_beta:
+    name: Build beta
     uses: ./.github/workflows/gcp-build.reusable.yml
     with:
       environment: beta
     secrets: inherit
   build_prod:
+    name: Build production
     uses: ./.github/workflows/gcp-build.reusable.yml
     with:
       environment: prod
     secrets: inherit
   deploy_beta:
+    name: Deploy beta
     needs: [build_beta]
     uses: ./.github/workflows/gcp-deploy.reusable.yml
     with:
       environment: beta
     secrets: inherit
   deploy_prod:
+    name: Deploy production
     needs: [deploy_beta, build_prod]
     uses: ./.github/workflows/gcp-deploy.reusable.yml
     with:
