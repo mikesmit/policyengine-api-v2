@@ -70,7 +70,7 @@ resource "google_cloud_run_v2_service" "cloud_run_full_api" {
     }
     scaling {
       # always keep one instance hot in prod
-      min_instance_count = var.is_prod ? 0 : 1
+      min_instance_count = var.is_prod ? 1 : 0
       # in beta don't create a bunch of containers
       # max in prod based on assumptions from cost estimate
       max_instance_count = var.is_prod ? 1 : 10
