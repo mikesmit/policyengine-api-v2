@@ -73,7 +73,7 @@ resource "google_cloud_run_v2_service" "cloud_run_full_api" {
       min_instance_count = var.is_prod ? 1 : 0
       # in beta don't create a bunch of containers
       # max in prod based on assumptions from cost estimate
-      max_instance_count = var.is_prod ? 1 : 10
+      max_instance_count = var.is_prod ? 10 : 1
     }
   }
 }
