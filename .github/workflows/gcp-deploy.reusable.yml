@@ -31,7 +31,7 @@ jobs:
     environment: ${{ inputs.environment }}
     env:
       TF_VAR_stage: ${{ inputs.environment }}
-      TF_VAR_is_prod: ${{ inputs.environment == 'prod' }}
+      TF_VAR_is_prod: ${{ inputs.environment == 'prod' && (vars.IS_DEV_FORK == 'false') }}
     
     permissions:
       contents: "read"
