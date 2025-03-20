@@ -169,3 +169,10 @@ resource "google_service_account" "workflow_sa" {
 }
 
 
+
+resource "google_project_iam_member" "deploy_service_account_roles" {
+  for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
+  project = var.project_id
+  role = each.key
+  member = "serviceAccount:${google_service_account.workflow_sa.email}"
+}
