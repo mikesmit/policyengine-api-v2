@@ -148,7 +148,7 @@ resource "google_workflows_workflow" "simulation_workflow" {
   name            = "simulation-workflow"
   region          = var.region
   description     = "Simulation workflow"
-  service_account = "simulation-workflows-sa"
+  service_account = "serviceAccount:simulation-workflows-sa@${var.project_id}.iam.gserviceaccount.com"
 
   deletion_protection = false # set to "true" in production
 
