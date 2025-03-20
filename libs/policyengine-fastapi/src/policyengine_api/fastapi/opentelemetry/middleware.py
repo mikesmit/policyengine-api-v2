@@ -37,7 +37,7 @@ class Middleware:
         route = next(
             r
             for r in self.routes
-            if r.route.matches(request.scope) != Match.NONE
+            if r.route.matches(request.scope)[0] != Match.NONE
         )
         start = time()
         if route:
