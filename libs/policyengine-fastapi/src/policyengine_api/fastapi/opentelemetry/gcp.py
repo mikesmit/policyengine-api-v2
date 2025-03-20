@@ -10,6 +10,8 @@ from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 
+from policyengine_api.fastapi.exit import exit
+
 log = logging.getLogger(__name__)
 
 # see https://cloud.google.com/trace/docs/setup/python-ot
@@ -106,6 +108,8 @@ def export_ot_to_gcp(resource: Resource):
     configure opentelemetry to directly export to gcp cloudtrace/metrics
     useful when running in the google cloud
     """
+
+    log.info("Configuring opentelemetry trace/metrics to log to stdout for desktop")
     traceProvider = TracerProvider(resource=resource)
     processor = BatchSpanProcessor(CloudTraceSpanExporter())
     traceProvider.add_span_processor(processor)
@@ -114,3 +118,10 @@ def export_ot_to_gcp(resource: Resource):
     reader = PeriodicExportingMetricReader(CloudMonitoringMetricsExporter())
     meterProvider = MeterProvider(metric_readers=[reader], resource=resource)
     metrics.set_meter_provider(meterProvider)
+
+    @exit()
+    def flush_ot():
+        log.info("Flushing traces and metrics before shutdown")
+        traceProvider.force_flush()
+        meterProvider.force_flush()
+        log.info("All metics and traces flushed.")

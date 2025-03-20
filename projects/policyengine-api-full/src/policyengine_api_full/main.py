@@ -5,6 +5,7 @@ from sqlmodel import SQLModel
 from policyengine_api.fastapi.database import create_sqlite_engine
 from policyengine_api.fastapi import ping
 from policyengine_api.fastapi.health import HealthRegistry, HealthSystemReporter
+from policyengine_api.fastapi.exit import exit
 from .settings import get_settings, Environment
 from policyengine_api.fastapi.opentelemetry import (
     GCPLoggingInstrumentor,
@@ -38,7 +39,8 @@ engine = create_sqlite_engine()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
-    yield
+    async with exit.lifespan():
+        yield
 
 
 app = FastAPI(
