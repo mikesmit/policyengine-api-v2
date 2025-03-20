@@ -161,18 +161,3 @@ resource "google_workflows_workflow" "simulation_workflow" {
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 }
-
-# Create a dedicated service account for workflow
-resource "google_service_account" "workflow_sa" {
-  account_id   = "simulation-workflows-sa"
-  display_name = "Simulation Workflows Service Account"
-}
-
-
-
-resource "google_project_iam_member" "deploy_service_account_roles" {
-  for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
-  project = var.project_id
-  role = each.key
-  member = "serviceAccount:${google_service_account.workflow_sa.email}"
-}
