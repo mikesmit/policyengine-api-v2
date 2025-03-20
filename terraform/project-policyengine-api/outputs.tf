@@ -33,6 +33,11 @@ output "tester_service_account_email" {
     description = "Service account for running tests"
 }
 
+output "workflow_service_account_email" {
+    value = google_service_account.workflow_sa.email
+    description = "Service account for running workflows"
+}
+
 output "docker_repository_namespace" {
     value = "${google_artifact_registry_repository.docker_repo.location}-docker.pkg.dev/${module.project.project_id}/${google_artifact_registry_repository.docker_repo.name}"
 }
