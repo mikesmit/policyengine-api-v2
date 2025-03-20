@@ -10,6 +10,8 @@ main:
         call: http.post
         args:
           url: ${cloudRunUrl}
+          auth:
+            type: OIDC
           headers:
             Content-Type: "application/json"
           body: ${input}
