@@ -9,3 +9,8 @@ output "simulation_api_url" {
 output "workflow_id" {
   value = google_workflows_workflow.simulation_workflow.id
 }
+
+output "workflow_service_account_email" {
+  value = google_service_account.workflow_sa.email
+  description = "Service account for running workflows"
+}

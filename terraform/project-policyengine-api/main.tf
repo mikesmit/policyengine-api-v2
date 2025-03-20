@@ -81,18 +81,7 @@ resource "google_service_account" "tester" {
   description = "Service account for running integration tests"
 }
 
-resource "google_service_account" "workflow_sa" {
-  project = module.project.project_id
-  account_id   = "simulation-workflows-sa"
-  display_name = "Simulation Workflows Service Account"
-}
-
-resource "google_project_iam_member" "deploy_workflow_service_account_roles" {
-  for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
-  project = module.project.project_id
-  role = each.key
-  member = "serviceAccount:${google_service_account.workflow_sa.email}"
-}
+# Workflow service account moved to infra-policyengine-api/main.tf
 
 #Look up the default compute account so we can add back in permissions.
 data "google_service_account" "default_compute" {
