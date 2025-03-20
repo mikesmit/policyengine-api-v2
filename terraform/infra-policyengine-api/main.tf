@@ -145,7 +145,6 @@ resource "google_cloud_run_service_iam_policy" "simulation_api" {
 
 # Create a workflow
 resource "google_workflows_workflow" "simulation_workflow" {
-  depends_on = [ google_service_account.workflow_sa ]
   name            = "simulation-workflow"
   region          = var.region
   description     = "Simulation workflow"
