@@ -13,6 +13,12 @@ resource "google_service_account" "cloudrun_full_api" {
   display_name = "Cloud Run Service Account for Full API"
 }
 
+# Create a dedicated service account for workflow
+resource "google_service_account" "workflow_sa" {
+  account_id   = "simulation-workflows-sa"
+  display_name = "Simulation Workflows Service Account"
+}
+
 resource "google_project_iam_member" "deploy_service_account_roles" {
   for_each = toset(["roles/monitoring.metricWriter", "roles/logging.logWriter", "roles/cloudtrace.agent"])
   project = var.project_id
@@ -130,7 +136,7 @@ data "google_iam_policy" "simulation_api" {
     role = "roles/run.invoker"
     members = [
       "serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com",
-      "serviceAccount:simulation-workflows-sa@${var.project_id}.iam.gserviceaccount.com",
+      "serviceAccount:${google_service_account.workflow_sa.email}",
     ]
   }
 }
@@ -148,7 +154,7 @@ resource "google_workflows_workflow" "simulation_workflow" {
   name            = "simulation-workflow"
   region          = var.region
   description     = "Simulation workflow"
-  service_account = "simulation-workflows-sa@${var.project_id}.iam.gserviceaccount.com"
+  service_account = google_service_account.workflow_sa.email
 
   deletion_protection = false # set to "true" in production
 
@@ -159,4 +165,12 @@ resource "google_workflows_workflow" "simulation_workflow" {
     service_url = "${google_cloud_run_v2_service.cloud_run_simulation_api.uri}/simulate/economy/comparison"
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
+}
+
+# Grant necessary permissions to the workflow service account
+resource "google_project_iam_member" "workflow_sa_permissions" {
+  for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
+  project = var.project_id
+  role = each.key
+  member = "serviceAccount:${google_service_account.workflow_sa.email}"
 }
