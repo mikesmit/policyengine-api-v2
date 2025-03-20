@@ -1,3 +1,4 @@
+import atexit
 from fastapi import FastAPI
 from opentelemetry.sdk.resources import (
     SERVICE_NAME,
@@ -23,6 +24,7 @@ import logging
 
 from .middleware import Middleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from policyengine_api.fastapi.exit import exit
 
 from .gcp import GCPLoggingInstrumentor, export_ot_to_gcp
 
@@ -45,6 +47,11 @@ def export_ot_to_console(resource: Resource):
     reader = PeriodicExportingMetricReader(ConsoleMetricExporter())
     meterProvider = MeterProvider(resource=resource, metric_readers=[reader])
     metrics.set_meter_provider(meterProvider)
+
+    @exit()
+    def flush_ot():
+        traceProvider.force_flush()
+        meterProvider.force_flush()
 
 
 class FastAPIEnhancedInstrumenter:
