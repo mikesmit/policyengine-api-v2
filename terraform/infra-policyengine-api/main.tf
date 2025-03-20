@@ -130,7 +130,7 @@ data "google_iam_policy" "simulation_api" {
     role = "roles/run.invoker"
     members = [
       "serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com",
-      "serviceAccount:${google_service_account.workflow_sa.email}"
+      "serviceAccount:simulation-workflows-sa@${var.project_id}.iam.gserviceaccount.com",
     ]
   }
 }
@@ -149,7 +149,7 @@ resource "google_workflows_workflow" "simulation_workflow" {
   name            = "simulation-workflow"
   region          = var.region
   description     = "Simulation workflow"
-  service_account = google_service_account.workflow_sa.id
+  service_account = "simulation-workflows-sa"
 
   deletion_protection = false # set to "true" in production
 
