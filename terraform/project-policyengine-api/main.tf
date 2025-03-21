@@ -48,6 +48,18 @@ module "project" {
     "secretmanager.googleapis.com"]
 }
 
+#Availability monitors optionally auth with ODIC, but you cannot configure
+#which service account they use, they HAVE to use the default service account
+#As of writing it won't complain when you tell it to auth and the default monitoring
+#SA doesn't exist, it will just not authenticate :/
+#Anyway, this is forcing creation according to https://cloud.google.com/iam/docs/create-service-agents#create-service-agent-terraform
+resource "google_project_service_identity" "mon_sa" {
+  provider = google-beta
+
+  project =  module.project.project_id
+  service = "monitoring.googleapis.com"
+}
+
 resource "google_storage_bucket" "logs" {
   project = module.project.project_id
   name = "${module.project.project_id}-buildlogs"
