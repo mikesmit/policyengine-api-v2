@@ -78,6 +78,7 @@ data "google_iam_policy" "api" {
     role = "roles/run.invoker"
     members = [
       "serviceAccount:${var.test_account_email}",
+      "serviceAccount:service-${data.google_project.project.number}@gcp-sa-monitoring-notification.iam.gserviceaccount.com"
     ]
   }
 }
