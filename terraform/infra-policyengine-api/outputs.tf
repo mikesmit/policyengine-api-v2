@@ -1,5 +1,5 @@
 output "full_api_url" {
-  value = google_cloud_run_v2_service.cloud_run_full_api.uri
+  value = module.cloud_run_full_api.uri
 }
 
 output "simulation_api_url" {
