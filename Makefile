@@ -19,6 +19,9 @@ dev-api-household:
 dev:
 	echo "Starting APIs (full+simulation) in dev mode"
 	make dev-api-full & make dev-api-simulation
+
+bootstrap:
+	cd terraform/project-policyengine-api && make bootstrap
 	
 deploy-infra: terraform/.bootstrap_settings
 	echo "Publishing API images"

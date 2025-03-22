@@ -7,6 +7,13 @@ provider "google" {
   project = var.project_id
 }
 
+# Enable required APIs
+resource "google_project_service" "secretmanager_api" {
+  project = var.project_id
+  service = "secretmanager.googleapis.com"
+  disable_on_destroy = false
+}
+
 # Create a custom service account
 resource "google_service_account" "cloudrun_full_api" {
   account_id   = "full-api"
@@ -113,13 +120,23 @@ resource "google_cloud_run_v2_service" "cloud_run_simulation_api" {
   description = "PolicyEngine Simulation API"
 
   template {
+    service_account = google_service_account.workflow_sa.email
     containers {
       image = local.simulation_api_image
       resources {
         limits = {
           # Need to tune. This process currently eats memory
-          cpu    = 1
-          memory =  "4Gi"
+          cpu    = 4
+          memory =  "16Gi"
+        }
+      }
+      env {
+        name  = "HUGGING_FACE_TOKEN"
+        value_source {
+          secret_key_ref {
+            secret = google_secret_manager_secret.hugging_face_token.secret_id
+            version = "latest"
+          }
         }
       }
     }
@@ -169,8 +186,25 @@ resource "google_workflows_workflow" "simulation_workflow" {
 
 # Grant necessary permissions to the workflow service account
 resource "google_project_iam_member" "workflow_sa_permissions" {
-  for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
+  for_each = toset(["roles/workflows.invoker", "roles/run.invoker", "roles/secretmanager.secretAccessor"])
   project = var.project_id
   role = each.key
   member = "serviceAccount:${google_service_account.workflow_sa.email}"
+}
+
+# Create a secret for the Hugging Face token
+resource "google_secret_manager_secret" "hugging_face_token" {
+  secret_id = "hugging-face-token"
+  
+  replication {
+    auto {}
+  }
+  
+  depends_on = [google_project_service.secretmanager_api]
+}
+
+# Add the secret version with the token value
+resource "google_secret_manager_secret_version" "hugging_face_token" {
+  secret = google_secret_manager_secret.hugging_face_token.id
+  secret_data = var.hugging_face_token
 }
