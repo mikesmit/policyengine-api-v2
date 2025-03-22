@@ -3,7 +3,7 @@ output "full_api_url" {
 }
 
 output "simulation_api_url" {
-  value = google_cloud_run_v2_service.cloud_run_simulation_api.uri
+  value = module.cloud_run_simulation_api.uri
 }
 
 output "workflow_id" {

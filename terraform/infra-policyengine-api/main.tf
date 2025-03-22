@@ -1,7 +1,3 @@
-locals {
-  simulation_api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-simulation:${var.simulation_container_tag}"
-}
-
 provider "google" {
   project = var.project_id
 }
@@ -26,52 +22,24 @@ module "cloud_run_full_api" {
   commit_url = var.commit_url
 }
 
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service
-resource "google_cloud_run_v2_service" "cloud_run_simulation_api" {
-  provider = google-beta
-  project = var.project_id
-  name     = "api-simulation"
-  location = var.region
-  deletion_protection = false
-  ingress = "INGRESS_TRAFFIC_ALL"
+module "cloud_run_simulation_api" {
+  source = "./modules/fastapi_cloudrun"
 
+  name = "api-simulation"
   description = "PolicyEngine Simulation API"
+  container_tag = var.simulation_container_tag
+  test_account_email = "tester@${var.project_id}.iam.gserviceaccount.com"
 
-  template {
-    containers {
-      image = local.simulation_api_image
-      resources {
-        limits = {
-          # Need to tune. This process currently eats memory
-          cpu    = 1
-          memory =  "4Gi"
-        }
-      }
-    }
-    scaling {
-      min_instance_count = var.is_prod ? 1 : 0
-      max_instance_count = var.is_prod ? 10 : 1
-    }
+  limits = {
+    cpu    = 1
+    memory = "4Gi"
   }
-}
 
-# Workflow and tester can both invoke the cloudrun service
-data "google_iam_policy" "simulation_api" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com",
-      "serviceAccount:${google_service_account.workflow_sa.email}"
-    ]
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "simulation_api" {
-  location = google_cloud_run_v2_service.cloud_run_simulation_api.location
-  project  = google_cloud_run_v2_service.cloud_run_simulation_api.project
-  service  = google_cloud_run_v2_service.cloud_run_simulation_api.name
-
-  policy_data = data.google_iam_policy.simulation_api.policy_data
+  project_id=var.project_id
+  region=var.region
+  is_prod=var.is_prod
+  slack_notification_channel_name=var.slack_notification_channel_name
+  commit_url = var.commit_url
 }
 
 # Create a workflow
@@ -88,7 +56,7 @@ resource "google_workflows_workflow" "simulation_workflow" {
     env = var.is_prod ? "prod" : "test"
   }
   user_env_vars = {
-    service_url = "${google_cloud_run_v2_service.cloud_run_simulation_api.uri}/simulate/economy/comparison"
+    service_url = "${module.cloud_run_simulation_api.uri}/simulate/economy/comparison"
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 }
