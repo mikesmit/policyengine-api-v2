@@ -7,6 +7,7 @@ module "cloud_run_full_api" {
 
   name = "full-api"
   description = "Full api containing all routes"
+  docker_repo = "policyengine-api-full"
   container_tag = var.full_container_tag
   test_account_email = "tester@${var.project_id}.iam.gserviceaccount.com"
 
@@ -28,6 +29,7 @@ module "cloud_run_simulation_api" {
   name = "api-simulation"
   description = "PolicyEngine Simulation API"
   container_tag = var.simulation_container_tag
+  docker_repo = "policyengine-api-simulation"
   test_account_email = "tester@${var.project_id}.iam.gserviceaccount.com"
 
   limits = {

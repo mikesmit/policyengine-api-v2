@@ -1,5 +1,5 @@
 locals {
-  api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-full:${var.container_tag}"
+  api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/${ var.docker_repo }:${var.container_tag}"
 }
 
 # Create a custom service account
@@ -44,7 +44,7 @@ resource "google_cloud_run_v2_service" "api" {
         initial_delay_seconds = 0
         timeout_seconds = 1
         period_seconds = 5
-        failure_threshold = 4
+        failure_threshold = 12
         http_get {
           path = "/ping/started"
         }

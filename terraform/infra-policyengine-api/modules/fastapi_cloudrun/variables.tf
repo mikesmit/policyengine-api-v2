@@ -13,6 +13,11 @@ variable "region" {
   type        = string
 }
 
+variable "docker_repo" {
+  description = "The name of the repo to get the image from"
+  type = string
+}
+
 variable "container_tag" {
   description = "The container image tag to deploy."
   type        = string
