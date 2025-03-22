@@ -33,7 +33,16 @@ variable "name" {
   type = string
 }
 
+variable "slack_notification_channel_name" {
+  type = string
+  default = ""
+}
 
 variable "test_account_email" {
   type = string
+}
+
+variable "commit_url" {
+  type = string
+  description = "URL of the commit this deployment is associated with"
 }

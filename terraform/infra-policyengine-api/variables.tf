@@ -24,3 +24,14 @@ variable "is_prod" {
   type        = bool
   default     = false
 }
+
+variable "slack_notification_channel_name" {
+  description = "Manually configured slack notification channel's name"
+  type = string
+  default = ""
+}
+
+variable "commit_url" {
+  type = string
+  description = "URL of the commit this deployment is associated with"
+}
