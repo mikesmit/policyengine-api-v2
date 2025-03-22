@@ -1,5 +1,5 @@
 locals {
-  simulation_api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-simulation:${var.simulation_container_tag}"
+  use_hugging_face_token = var.hugging_face_token != ""
 }
 
 provider "google" {
@@ -17,8 +17,9 @@ module "cloud_run_full_api" {
 
   name = "full-api"
   description = "Full api containing all routes"
+  docker_repo = "policyengine-api-full"
   container_tag = var.full_container_tag
-  test_account_email = "tester@${var.project_id}.iam.gserviceaccount.com"
+  members_can_invoke = ["serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com"]
 
   limits = {
     cpu    = var.is_prod ? 2 : null
@@ -32,62 +33,34 @@ module "cloud_run_full_api" {
   commit_url = var.commit_url
 }
 
-# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service
-resource "google_cloud_run_v2_service" "cloud_run_simulation_api" {
-  provider = google-beta
-  project = var.project_id
-  name     = "api-simulation"
-  location = var.region
-  deletion_protection = false
-  ingress = "INGRESS_TRAFFIC_ALL"
+module "cloud_run_simulation_api" {
+  source = "./modules/fastapi_cloudrun"
 
+  name = "api-simulation"
   description = "PolicyEngine Simulation API"
+  container_tag = var.simulation_container_tag
+  docker_repo = "policyengine-api-simulation"
+  members_can_invoke = [
+    "serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com", 
+    "serviceAccount:${google_service_account.workflow_sa.email}"]
+  service_roles =  [
+    "roles/secretmanager.secretAccessor"
+  ]
 
-  template {
-    service_account = google_service_account.workflow_sa.email
-    containers {
-      image = local.simulation_api_image
-      resources {
-        limits = {
-          # Need to tune. This process currently eats memory
-          cpu    = 4
-          memory =  "16Gi"
-        }
-      }
-      env {
-        name  = "HUGGING_FACE_TOKEN"
-        value_source {
-          secret_key_ref {
-            secret = google_secret_manager_secret.hugging_face_token.secret_id
-            version = "latest"
-          }
-        }
-      }
-    }
-    scaling {
-      min_instance_count = var.is_prod ? 1 : 0
-      max_instance_count = var.is_prod ? 10 : 1
-    }
+  environment_secrets = local.use_hugging_face_token ? {
+    "HUGGING_FACE_TOKEN" = google_secret_manager_secret.hugging_face_token[0].secret_id
+  } : {}
+  
+  limits = {
+    cpu    = 1
+    memory = "4Gi"
   }
-}
 
-# Workflow and tester can both invoke the cloudrun service
-data "google_iam_policy" "simulation_api" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com",
-      "serviceAccount:${google_service_account.workflow_sa.email}",
-    ]
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "simulation_api" {
-  location = google_cloud_run_v2_service.cloud_run_simulation_api.location
-  project  = google_cloud_run_v2_service.cloud_run_simulation_api.project
-  service  = google_cloud_run_v2_service.cloud_run_simulation_api.name
-
-  policy_data = data.google_iam_policy.simulation_api.policy_data
+  project_id=var.project_id
+  region=var.region
+  is_prod=var.is_prod
+  slack_notification_channel_name=var.slack_notification_channel_name
+  commit_url = var.commit_url
 }
 
 # Create a workflow
@@ -103,14 +76,14 @@ resource "google_workflows_workflow" "simulation_workflow" {
     env = var.is_prod ? "prod" : "test"
   }
   user_env_vars = {
-    service_url = "${google_cloud_run_v2_service.cloud_run_simulation_api.uri}/simulate/economy/comparison"
+    service_url = "${module.cloud_run_simulation_api.uri}/simulate/economy/comparison"
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 }
 
 # Grant necessary permissions to the workflow service account
 resource "google_project_iam_member" "workflow_sa_permissions" {
-  for_each = toset(["roles/workflows.invoker", "roles/run.invoker", "roles/secretmanager.secretAccessor"])
+  for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
   project = var.project_id
   role = each.key
   member = "serviceAccount:${google_service_account.workflow_sa.email}"
@@ -118,17 +91,17 @@ resource "google_project_iam_member" "workflow_sa_permissions" {
 
 # Create a secret for the Hugging Face token
 resource "google_secret_manager_secret" "hugging_face_token" {
+  count = local.use_hugging_face_token == true ? 1 : 0
   secret_id = "hugging-face-token"
   
   replication {
     auto {}
-  }
-  
-  depends_on = [google_project_service.secretmanager_api]
+  } 
 }
 
 # Add the secret version with the token value
 resource "google_secret_manager_secret_version" "hugging_face_token" {
-  secret = google_secret_manager_secret.hugging_face_token.id
+  count = local.use_hugging_face_token == true ? 1 : 0
+  secret = google_secret_manager_secret.hugging_face_token[0].id
   secret_data = var.hugging_face_token
 }

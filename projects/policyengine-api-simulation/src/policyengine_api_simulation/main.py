@@ -8,12 +8,15 @@ from policyengine_api.fastapi.opentelemetry import (
     export_ot_to_console,
     export_ot_to_gcp,
 )
+from policyengine_api.fastapi.exit import exit
 from opentelemetry.sdk.resources import (
     SERVICE_NAME,
     SERVICE_INSTANCE_ID,
     Resource,
 )
 from policyengine_api.simulation_api import initialize
+from policyengine_api.fastapi import ping
+from policyengine_api.fastapi.health import HealthRegistry, HealthSystemReporter
 import logging
 
 """
@@ -25,10 +28,25 @@ specific example instantiation of the app configured by a .env file
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with exit.lifespan():
+        yield
+
+
+app = FastAPI(
+    lifespan=lifespan,
+    title="policyengine-api-simulation",
+    summary="Policyengine simulation api",
+)
 
 # attach the api defined in the app package
 initialize(app=app)
+
+# attach ping routes
+health_registry = HealthRegistry()
+health_registry.register(HealthSystemReporter("general", {}))
+ping.include_all_routers(app, health_registry)
 
 # configure tracing and metrics
 GCPLoggingInstrumentor().instrument()

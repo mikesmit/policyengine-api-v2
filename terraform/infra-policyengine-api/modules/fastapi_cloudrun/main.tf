@@ -1,5 +1,5 @@
 locals {
-  api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/policyengine-api-full:${var.container_tag}"
+  api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/${ var.docker_repo }:${var.container_tag}"
 }
 
 # Create a custom service account
@@ -9,7 +9,9 @@ resource "google_service_account" "api" {
 }
 
 resource "google_project_iam_member" "api_roles" {
-  for_each = toset(["roles/monitoring.metricWriter", "roles/logging.logWriter", "roles/cloudtrace.agent"])
+  for_each = toset(
+    //basic roles required to write logs, metrics, traces + whatever the actual code requires
+    concat(var.service_roles, ["roles/monitoring.metricWriter", "roles/logging.logWriter", "roles/cloudtrace.agent"]))
   project = var.project_id
   role = each.key
   member = "serviceAccount:${google_service_account.api.email}"
@@ -44,7 +46,8 @@ resource "google_cloud_run_v2_service" "api" {
         initial_delay_seconds = 0
         timeout_seconds = 1
         period_seconds = 5
-        failure_threshold = 4
+        #Currently this high because simulation is so slow to load.
+        failure_threshold = 24
         http_get {
           path = "/ping/started"
         }
@@ -59,6 +62,19 @@ resource "google_cloud_run_v2_service" "api" {
           failure_threshold = 2
           http_get {
             path = "/ping/alive"
+          }
+        }
+      }
+
+      dynamic "env" {
+        for_each = var.environment_secrets
+        content {
+          name  = env.key
+          value_source {
+            secret_key_ref {
+              secret = env.value
+              version = "latest"
+            }
           }
         }
       }
@@ -80,10 +96,11 @@ data "google_project" "project" {
 data "google_iam_policy" "api" {
   binding {
     role = "roles/run.invoker"
-    members = [
-      "serviceAccount:${var.test_account_email}",
+    members = concat(var.members_can_invoke,
+    [
+      //support the monitor calling the api
       "serviceAccount:service-${data.google_project.project.number}@gcp-sa-monitoring-notification.iam.gserviceaccount.com"
-    ]
+    ])
   }
 }
 
