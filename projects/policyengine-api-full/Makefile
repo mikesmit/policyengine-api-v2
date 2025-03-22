@@ -21,7 +21,7 @@ deploy:
 build:
 	poetry install
 	mkdir -p artifacts
-	cd src && poetry run python -m policyengine_api_full.generate_openapi > ../artifacts/openapi.json
+	cd src && poetry run generate-openapi policyengine_api_full.main -o ../artifacts/openapi.json
 	mvn -f ./generate_clients.pom.xml clean generate-sources
 	@echo "TODO: add back in the tests"
 

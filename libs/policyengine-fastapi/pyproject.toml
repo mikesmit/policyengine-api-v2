@@ -38,3 +38,6 @@ pytest-asyncio = "^0.25.3"
 pythonpath = [
   "src"
 ]
+
+[tool.poetry.scripts]
+generate-openapi = "policyengine_api.fastapi.generator:main"
