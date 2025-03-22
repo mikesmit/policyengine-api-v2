@@ -1,4 +1,5 @@
 from typing import Annotated
+import os
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from policyengine.simulation import SimulationOptions, Simulation
@@ -14,7 +15,6 @@ def create_router():
         "/simulate/economy/comparison", response_model=EconomyComparison
     )
     async def simulate(parameters: SimulationOptions) -> EconomyComparison:
-        print(parameters)
         model = SimulationOptions.model_validate(parameters)
 
         simulation = Simulation(**model.model_dump())

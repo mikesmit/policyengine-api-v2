@@ -6,10 +6,10 @@ authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 dependencies = [
     "policyengine-fastapi @ ../policyengine-fastapi",
-    "policyengine>=0.1.2",
+    "policyengine==0.1.2",
 ]
 
 

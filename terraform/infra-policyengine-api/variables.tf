@@ -24,3 +24,9 @@ variable "is_prod" {
   type        = bool
   default     = false
 }
+
+variable "hugging_face_token" {
+  description = "The Hugging Face API token for the simulation API"
+  type        = string
+  sensitive   = true
+}
