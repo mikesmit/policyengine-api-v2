@@ -43,7 +43,9 @@ module "project" {
     "workflows.googleapis.com",
     # to support tracelogs and metrics from our services
     "cloudtrace.googleapis.com",
-    "monitoring.googleapis.com"]
+    "monitoring.googleapis.com",
+    # to store microdata token for pulling data
+    "secretmanager.googleapis.com"]
 }
 
 resource "google_storage_bucket" "logs" {
