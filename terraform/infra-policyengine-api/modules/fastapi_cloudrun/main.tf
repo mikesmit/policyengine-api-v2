@@ -73,6 +73,10 @@ resource "google_cloud_run_v2_service" "api" {
   }
 }
 
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
 data "google_iam_policy" "api" {
   binding {
     role = "roles/run.invoker"

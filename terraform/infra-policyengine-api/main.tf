@@ -28,6 +28,8 @@ module "cloud_run_full_api" {
   project_id=var.project_id
   region=var.region
   is_prod=var.is_prod
+  slack_notification_channel_name=var.slack_notification_channel_name
+  commit_url = var.commit_url
 }
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_service

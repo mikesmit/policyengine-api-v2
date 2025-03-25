@@ -1,6 +1,9 @@
 # For github action deployes we use environment variables to configure terraform
 # on desktop we use apply files generated either by the infra-policyengine-api bootstrap
 # or manual user config
+REPO_URL := $(shell git remote get-url origin | sed 's/\.git$$//' | sed 's/git@github.com:/https:\/\/github.com\//')
+COMMIT_SHA := $(shell git rev-parse HEAD)
+COMMIT_URL := $(REPO_URL)/commit/$(COMMIT_SHA)
 
 # get the project ID
 include ../.bootstrap_settings/project.env
@@ -18,7 +21,7 @@ deploy: .terraform
 	@echo "Latest Full API SHA: ${FULL_SHA}"
 	@echo "Latest Simulation API SHA: ${SIM_SHA}"
 	@echo "Running terraform apply with ../.bootstrap_settings/apply.tfvars"
-	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "full_container_tag=${TAG}@${FULL_SHA}" -var "simulation_container_tag=${TAG}@${SIM_SHA}" -lock=false
+	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "full_container_tag=${TAG}@${FULL_SHA}" -var "simulation_container_tag=${TAG}@${SIM_SHA}" -var "commit_url=${COMMIT_URL}"
 
 .terraform: ../.bootstrap_settings/backend.tfvars
 	@echo "Initializing terraform"

@@ -1,3 +1,7 @@
+REPO_URL := $(shell git remote get-url origin | sed 's/\.git$$//' | sed 's/git@github.com:/https:\/\/github.com\//')
+COMMIT_SHA := $(shell git rev-parse HEAD)
+COMMIT_URL := $(REPO_URL)/commit/$(COMMIT_SHA)
+
 plan-deploy: .terraform
 	terraform plan -input=false
 
@@ -5,7 +9,7 @@ state: .terraform
 	terraform output -json
 
 deploy: .terraform
-	terraform apply -input=false -auto-approve
+	terraform apply -input=false -auto-approve -var "commit_url=${COMMIT_URL}"
 	terraform output -json > terraform_output.json
 
 .terraform:

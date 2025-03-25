@@ -61,6 +61,9 @@ terraform apply -var "org_id=${org_id}" -var "billing_account=${billing_account}
     -var "github_repo_owner_id=${github_repo_owner_id}" -var "github_repo=${github_repo}"
 terraform init -migrate-state
 
+echo " (OPTIONALLY) Please go into the console and create a slack notification channel. Write down the display name"
+read -p "Enter notification channel display name (LEAVE EMPTY FOR NONE):" slack_notification_channel_name
+
 
 project_id=$(terraform output -raw project_id)
 project_bucket=$(terraform output -raw project_bucket)
@@ -78,6 +81,7 @@ project_id       = "${project_id}"
 is_prod          = ${is_prod}
 github_repo_owner_id = "${github_repo_owner_id}"
 github_repo          = "${github_repo}"
+slack_notification_channel_name = "${slack_notification_channel_name}"
 EOF
 
 echo "Creating backend.tfvars which is used to configure the backend.tf settings when using terraform init"
