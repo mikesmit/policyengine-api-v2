@@ -23,4 +23,4 @@ COPY src ./src/
 RUN poetry install --with main --no-root
 
 EXPOSE 8080
-CMD ["poetry", "run", "fastapi", "run", "src/policyengine_api_simulation/main.py", "--port", "8080"]
+CMD ["poetry", "run", "uvicorn", "src.policyengine_api_simulation.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "4"]
