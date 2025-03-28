@@ -1,4 +1,5 @@
 
+
 resource "google_monitoring_uptime_check_config" "cloudrun_health_check" {
   display_name = "${var.name} Health Check"
   # response time can be slower because of container spin up in beta.
@@ -73,10 +74,47 @@ resource "google_monitoring_alert_policy" "cloudrun_health_alert" {
       EOT
     mime_type = "text/markdown"
   }
-  
 
   # Auto-close to reduce alert fatigue
   #alert_strategy {
   #  auto_close = var.is_prod ? "1800s" : "3600s" # 30 minutes for prod, 1 hour for non-prod
   #}
 }
+
+resource "google_monitoring_alert_policy" "limit_alert" {
+  display_name = "${var.name} Limit Check"
+  combiner     = "OR"
+  
+  conditions {
+    display_name = "Memory usage over 75%"
+    condition_prometheus_query_language {
+        #go into the monitoring console, query metrics, select the thing you want to monitor and then select the prometheus view in order to get the right syntax for these.
+        #the documentation is pretty bad and none of the LLMs, including google's, know how to do these properly.
+        query = "histogram_quantile(0.95,sum by (le)(increase(run_googleapis_com:container_memory_utilizations_bucket{monitored_resource=\"cloud_run_revision\",service_name=\"${google_cloud_run_v2_service.api.name}\"}[1m]))) > .75"
+        duration = "60s"
+        evaluation_interval = "60s"
+        alert_rule = "OnPresentAndFiring"
+        rule_group = "health_checks"
+        labels = {
+          severity = "critical"
+        }
+    }
+  }
+
+  notification_channels = local.notification_channels
+
+  # Add documentation with more detailed information for Slack messages
+  documentation {
+  content = <<-EOT
+      🚨 *${var.name} Service Limit Alert*
+
+      The ${var.name}'s has exceeded resource limits. Check the related policy to see which one.
+
+      *Troubleshooting Steps:*
+      - Check the [${var.name} Cloud Run service](https://console.cloud.google.com/run/detail/${var.region}/${var.name}/metrics?project=${var.project_id})
+      - Check the [latest changes](${var.commit_url})
+      EOT
+    mime_type = "text/markdown"
+  }
+}
+  
