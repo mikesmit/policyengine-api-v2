@@ -52,8 +52,8 @@ module "cloud_run_simulation_api" {
   } : {}
   
   limits = {
-    cpu    = 1
-    memory = "4Gi"
+    cpu    = 2
+    memory = "16Gi"
   }
 
   project_id=var.project_id
