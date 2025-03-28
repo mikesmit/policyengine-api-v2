@@ -52,7 +52,7 @@ module "cloud_run_simulation_api" {
   } : {}
   
   limits = {
-    cpu    = 2
+    cpu    = 4
     memory = "16Gi"
   }
 
