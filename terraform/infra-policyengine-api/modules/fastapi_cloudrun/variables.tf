@@ -13,6 +13,11 @@ variable "region" {
   type        = string
 }
 
+variable "docker_repo" {
+  description = "The name of the repo to get the image from"
+  type = string
+}
+
 variable "container_tag" {
   description = "The container image tag to deploy."
   type        = string
@@ -23,6 +28,12 @@ variable limits {
     cpu    = number
     memory = string
   })
+}
+
+variable "environment_secrets" {
+  description = "Map of environment variable names to their corresponding secret IDs in Google Secret Manager"
+  type = map(string)
+  default = {}
 }
 
 variable "description" {
@@ -38,11 +49,19 @@ variable "slack_notification_channel_name" {
   default = ""
 }
 
-variable "test_account_email" {
-  type = string
-}
-
 variable "commit_url" {
   type = string
   description = "URL of the commit this deployment is associated with"
+}
+
+variable "members_can_invoke" {
+  type = list(string)
+  description = "entities to add to the invoke policy for this service"
+  default = []
+}
+
+variable "service_roles" {
+  type = list(string)
+  description = "roles to give the service account for this clodurun service"
+  default = []
 }

@@ -29,6 +29,7 @@ variable "hugging_face_token" {
   description = "The Hugging Face API token for the simulation API"
   type        = string
   sensitive   = true
+  default = ""
 }
 
 variable "slack_notification_channel_name" {
