@@ -86,6 +86,7 @@ resource "google_cloud_run_v2_service" "api" {
       # max in prod based on assumptions from cost estimate
       max_instance_count = var.is_prod ? 10 : 1
     }
+    timeout = "3600s"
   }
 }
 
