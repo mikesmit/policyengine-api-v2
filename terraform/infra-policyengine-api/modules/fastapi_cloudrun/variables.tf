@@ -30,6 +30,12 @@ variable limits {
   })
 }
 
+variable request_based_billing {
+  description = "Whether to use request-based billing for the Cloud Run service"
+  type        = bool
+  default     = false
+}
+
 variable "environment_secrets" {
   description = "Map of environment variable names to their corresponding secret IDs in Google Secret Manager"
   type = map(string)

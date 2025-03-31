@@ -41,6 +41,8 @@ resource "google_cloud_run_v2_service" "api" {
           cpu    = var.limits.cpu
           memory = var.limits.memory
         }
+        cpu_idle = var.request_based_billing ? true : false
+        startup_cpu_boost = true
       }
       startup_probe {
         initial_delay_seconds = 0

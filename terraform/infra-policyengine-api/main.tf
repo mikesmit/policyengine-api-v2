@@ -56,6 +56,8 @@ module "cloud_run_simulation_api" {
     memory = "16Gi"
   }
 
+  request_based_billing = true
+
   project_id=var.project_id
   region=var.region
   is_prod=var.is_prod
