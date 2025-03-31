@@ -20,6 +20,7 @@ deploy:
 
 build:
 	poetry install
+	poetry update
 	mkdir -p artifacts
 	cd src && poetry run python -m policyengine_api_full.generate_openapi > ../artifacts/openapi.json
 	mvn -f ./generate_clients.pom.xml clean generate-sources
