@@ -10,6 +10,7 @@ requires-python = ">=3.11,<3.13"
 dependencies = [
     "policyengine-fastapi @ ../policyengine-fastapi",
     "policyengine==0.1.2",
+    "policyengine-uk==2.22.6",
 ]
 
 
