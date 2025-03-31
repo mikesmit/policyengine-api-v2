@@ -52,9 +52,10 @@ module "cloud_run_simulation_api" {
   } : {}
   
   limits = {
-    cpu    = 8
-    memory = "32Gi"
+    memory = "16Gi"
   }
+
+  request_based_billing = true
 
   project_id=var.project_id
   region=var.region
