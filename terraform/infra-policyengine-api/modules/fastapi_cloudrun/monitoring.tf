@@ -30,7 +30,8 @@ resource "google_monitoring_uptime_check_config" "cloudrun_health_check" {
   # in beta just check from the US to reduce cost
   # in prod check europe and the US since those are the two regions we currently primarily
   # operate in (pending multi-region expansion which we don't currently do)
-  selected_regions = var.is_prod ? ["USA", "EUROPE_WEST"] : ["USA"]
+  # https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.uptimeCheckConfigs#UptimeCheckRegion
+  selected_regions = var.is_prod ? ["USA_VIRGINIA", "EUROPE"] : ["USA_VIRGINIA"]
 }
 
 # Only reference the Slack notification channel if the variable is not empty
