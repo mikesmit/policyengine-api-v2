@@ -23,4 +23,7 @@ COPY src ./src/
 RUN poetry install --with main --no-root
 
 EXPOSE 8080
-CMD ["poetry", "run", "uvicorn", "src.policyengine_api_simulation.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "4"]
+# bottlenck is memory
+# two workers to handle external reuqests (max allowed = 2)
+# one worker to do the liveness check
+CMD ["poetry", "run", "uvicorn", "src.policyengine_api_simulation.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]

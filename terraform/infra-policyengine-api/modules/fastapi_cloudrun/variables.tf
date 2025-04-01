@@ -1,8 +1,3 @@
-variable "is_prod" {
-  description = "Whether this is a production deployment"
-  type        = bool
-}
-
 variable "project_id" {
   description = "The GCP project to deploy to"
   type        = string
@@ -30,16 +25,43 @@ variable limits {
   })
 }
 
+variable min_instance_count {
+  description = "The minimum number of instances to keep 'hot' regardless of requests"
+  type = number
+}
+
+variable max_instance_count {
+  description = "The maximum number of instances to allow;"
+  type = number
+  default = 1
+}
+
+variable max_instance_request_concurrency {
+  description = "How many requests can a single container handle at once"
+  type = number
+}
+
 variable request_based_billing {
   description = "Whether to use request-based billing for the Cloud Run service"
   type        = bool
   default     = false
 }
 
+variable "uptime_timeout" {
+  type = string
+  description = "number of seconds to wait for the uptime check response before failing"
+}
+
+
 variable "environment_secrets" {
   description = "Map of environment variable names to their corresponding secret IDs in Google Secret Manager"
   type = map(string)
   default = {}
+}
+
+variable "timeout" {
+  description = "Max time a container can take to respond to a request up to 1 hour"
+  type = string
 }
 
 variable "description" {
@@ -70,4 +92,9 @@ variable "service_roles" {
   type = list(string)
   description = "roles to give the service account for this clodurun service"
   default = []
+}
+
+variable "enable_uptime_check" {
+  type = bool
+  description = "Should this autogenerate an uptime check for the cloudrun service"
 }
