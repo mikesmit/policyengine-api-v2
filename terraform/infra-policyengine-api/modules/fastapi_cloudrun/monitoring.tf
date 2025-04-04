@@ -1,11 +1,12 @@
 
 
 resource "google_monitoring_uptime_check_config" "cloudrun_health_check" {
+  for_each = var.enable_uptime_check ? toset(["0"]) : toset([])
   display_name = "${var.name} Health Check"
   # response time can be slower because of container spin up in beta.
-  timeout      = var.is_prod ? "1s" : "10s"
-  # don't waste resources waking up the beta container all the time. Just do it once a day.
-  period       = var.is_prod ? "300s" : "900s"
+  timeout      = var.uptime_timeout
+  # once every 5 minutes
+  period       = "300s"
 
   http_check {
     path         = "/ping/alive"
@@ -27,11 +28,9 @@ resource "google_monitoring_uptime_check_config" "cloudrun_health_check" {
   }
 
   # See https://github.com/PolicyEngine/policyengine-api-v2/issues/117
-  # in beta just check from the US to reduce cost
-  # in prod check europe and the US since those are the two regions we currently primarily
-  # operate in (pending multi-region expansion which we don't currently do)
+  # we are not yet multi-regional so just check the places we operate in.
   # https://cloud.google.com/monitoring/api/ref_v3/rest/v3/projects.uptimeCheckConfigs#UptimeCheckRegion
-  selected_regions = var.is_prod ? ["USA", "EUROPE"] : ["USA"]
+  selected_regions = ["USA", "EUROPE"]
 }
 
 # Only reference the Slack notification channel if the variable is not empty
@@ -49,17 +48,16 @@ data "google_monitoring_notification_channel" "slack" {
 
 # Create the alerting policy with PromQL that references your uptime check
 resource "google_monitoring_alert_policy" "cloudrun_health_alert" {
+  for_each = var.enable_uptime_check ? toset(["0"]) : ([])
   display_name = "${var.name} Health Check Alert"
   combiner     = "OR"
   
   conditions {
     display_name = "Uptime Check Failed"
     condition_prometheus_query_language {
-        query = "avg by (check_id)(avg_over_time(monitoring_googleapis_com:uptime_check_check_passed{check_id=\"${google_monitoring_uptime_check_config.cloudrun_health_check.uptime_check_id}\", monitored_resource=\"uptime_url\"}[60s])) < 1"
-        duration = "60s"
-        evaluation_interval = "60s"
-        alert_rule = "OnPresentAndFiring"
-        rule_group = "health_checks"
+        query = "avg by (check_id)(avg_over_time(monitoring_googleapis_com:uptime_check_check_passed{check_id=\"${google_monitoring_uptime_check_config.cloudrun_health_check[0].uptime_check_id}\", monitored_resource=\"uptime_url\"}[60s])) < 1"
+        #fail two consecutive checks (5 minutes)
+        duration = "600s" #10m
         labels = {
           severity = "critical"
         }
@@ -81,11 +79,6 @@ resource "google_monitoring_alert_policy" "cloudrun_health_alert" {
       EOT
     mime_type = "text/markdown"
   }
-
-  # Auto-close to reduce alert fatigue
-  #alert_strategy {
-  #  auto_close = var.is_prod ? "1800s" : "3600s" # 30 minutes for prod, 1 hour for non-prod
-  #}
 }
 
 resource "google_monitoring_alert_policy" "limit_alert" {
@@ -93,15 +86,14 @@ resource "google_monitoring_alert_policy" "limit_alert" {
   combiner     = "OR"
   
   conditions {
-    display_name = "Memory usage over 75%"
+    display_name = "Memory usage over 90%"
     condition_prometheus_query_language {
         #go into the monitoring console, query metrics, select the thing you want to monitor and then select the prometheus view in order to get the right syntax for these.
         #the documentation is pretty bad and none of the LLMs, including google's, know how to do these properly.
-        query = "histogram_quantile(0.95,sum by (le)(increase(run_googleapis_com:container_memory_utilizations_bucket{monitored_resource=\"cloud_run_revision\",service_name=\"${google_cloud_run_v2_service.api.name}\"}[1m]))) > .75"
+        query = "histogram_quantile(0.95,sum by (le)(increase(run_googleapis_com:container_memory_utilizations_bucket{monitored_resource=\"cloud_run_revision\",service_name=\"${google_cloud_run_v2_service.api.name}\"}[1m]))) > .9"
+        #if the memory jumps above 90% immediately notify the team in slack that we're approaching our limit.
         duration = "60s"
         evaluation_interval = "60s"
-        alert_rule = "OnPresentAndFiring"
-        rule_group = "health_checks"
         labels = {
           severity = "critical"
         }

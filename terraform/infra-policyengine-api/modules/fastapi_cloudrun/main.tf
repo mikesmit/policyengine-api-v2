@@ -30,13 +30,10 @@ resource "google_cloud_run_v2_service" "api" {
 
   template {
     service_account = google_service_account.api.email
-    # Assumption from cost estimate.
-    max_instance_request_concurrency = var.is_prod ? 80 : null
+    max_instance_request_concurrency = var.max_instance_request_concurrency
     containers {
       image = local.api_image
       resources {
-        #default to whatever the cheapest instance is unless in prod in which
-        # case values are again based on the cost esitmate.
         limits = {
           cpu    = var.limits.cpu
           memory = var.limits.memory
@@ -44,6 +41,7 @@ resource "google_cloud_run_v2_service" "api" {
         cpu_idle = var.request_based_billing ? true : false
         startup_cpu_boost = true
       }
+
       startup_probe {
         initial_delay_seconds = 0
         timeout_seconds = 1
@@ -54,17 +52,14 @@ resource "google_cloud_run_v2_service" "api" {
           path = "/ping/started"
         }
       }
-      # Only include liveness_probe in production environment so we don't
-      # waste money running beta containers.
-      dynamic "liveness_probe" {
-        for_each = var.is_prod ? [1] : []
-        content {
-          period_seconds = 30 
-          timeout_seconds = 1 
-          failure_threshold = 2
-          http_get {
-            path = "/ping/alive"
-          }
+
+      liveness_probe {
+        #once every 5 minutes
+        period_seconds = 300 
+        timeout_seconds = 1 
+        failure_threshold = 2
+        http_get {
+          path = "/ping/alive"
         }
       }
 
@@ -83,12 +78,13 @@ resource "google_cloud_run_v2_service" "api" {
     }
     scaling {
       # always keep one instance hot in prod
-      min_instance_count = var.is_prod ? 1 : 0
+      min_instance_count = var.min_instance_count
       # in beta don't create a bunch of containers
       # max in prod based on assumptions from cost estimate
-      max_instance_count = var.is_prod ? 10 : 1
+      max_instance_count = var.max_instance_count
     }
-    timeout = "3600s"
+    #Max timeout of 1 hour permitted.
+    timeout = var.timeout
   }
 }
 

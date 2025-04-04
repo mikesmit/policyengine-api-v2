@@ -28,9 +28,18 @@ module "cloud_run_full_api" {
 
   project_id=var.project_id
   region=var.region
-  is_prod=var.is_prod
   slack_notification_channel_name=var.slack_notification_channel_name
   commit_url = var.commit_url
+
+  uptime_timeout = var.is_prod ? "1s" : "30s"
+  min_instance_count = var.is_prod ? 1: 0
+  max_instance_count = 2
+  #guessing. Need to tune.
+  max_instance_request_concurrency = var.is_prod ? 80: 1
+  #this service should return basically immediately to all requests.
+  timeout = "1s"
+
+  enable_uptime_check = true
 }
 
 module "cloud_run_simulation_api" {
@@ -56,13 +65,26 @@ module "cloud_run_simulation_api" {
     memory = "16Gi"
   }
 
-  request_based_billing = true
+  
 
   project_id=var.project_id
   region=var.region
-  is_prod=var.is_prod
   slack_notification_channel_name=var.slack_notification_channel_name
   commit_url = var.commit_url
+
+  uptime_timeout = var.is_prod ? "1s" : "30s"
+  request_based_billing = true
+  min_instance_count = var.is_prod ? 1: 0
+  #arbitrary number. May need to tweak
+  max_instance_count = var.is_prod ? 10 : 1
+  #we are currently memory bound. internally it runs 3 handlers. keep one open for liveness checks.
+  max_instance_request_concurrency = 2
+  #permit max timeout since we run entire population simulations.
+  timeout = "3600s"
+
+  # This service can't really handle more than one request in a single container so
+  # we don't use uptime check
+  enable_uptime_check = false
 }
 
 # Create a workflow
