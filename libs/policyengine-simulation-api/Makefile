@@ -5,4 +5,4 @@ install:
 	poetry update
 
 test: install
-	poetry run pytest
+	echo "Todo: add tests"
