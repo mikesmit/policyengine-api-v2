@@ -1769,14 +1769,14 @@ url = "../policyengine-fastapi"
 
 [[package]]
 name = "policyengine-uk"
-version = "2.22.6"
+version = "2.22.8"
 description = "PolicyEngine tax and benefit system for the UK"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "policyengine_uk-2.22.6-py3-none-any.whl", hash = "sha256:f3b7a8c74eed3df0e93ce78802bf8fe44ac8f045e76027b07b17a00494207192"},
-    {file = "policyengine_uk-2.22.6.tar.gz", hash = "sha256:9bd3015dcfdfe803c7519a9406d79c0a2a03ebe49c3850f51308e2930ac78558"},
+    {file = "policyengine_uk-2.22.8-py3-none-any.whl", hash = "sha256:19a2195c6871a07481c1d52a2f13e6b17168167314a533a7df89ecd130114450"},
+    {file = "policyengine_uk-2.22.8.tar.gz", hash = "sha256:000f62ee88edb7484f41f7adef26d23faa350c65942fdf81f75a0b8037969cf5"},
 ]
 
 [package.dependencies]
@@ -1810,19 +1810,19 @@ dev = ["black", "build", "furo", "itables", "jupyter-book", "pytest", "quantile-
 
 [[package]]
 name = "policyengine-us"
-version = "1.248.1"
+version = "1.247.0"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.248.1-py3-none-any.whl", hash = "sha256:91a001feb2e1b36aa9e22172f9897257b47374a0deb7c4fce11f087800406195"},
-    {file = "policyengine_us-1.248.1.tar.gz", hash = "sha256:27a235401e133b9908a2c0ea446dffcbf65291be69c0a7cf993108a8bcd0ecf9"},
+    {file = "policyengine_us-1.247.0-py3-none-any.whl", hash = "sha256:46e5364c7e9f7829fca677ec70c98db4b467bf5ed118e5f0fdde9e58545b8b96"},
+    {file = "policyengine_us-1.247.0.tar.gz", hash = "sha256:d71f48b67f6107290d4d59dec18bb5f9ec4971038e8f852a2070b2f84a1dec7a"},
 ]
 
 [package.dependencies]
 microdf-python = ">=0.4.3"
-policyengine-core = ">=3.16.5"
+policyengine-core = ">=3.14.1"
 policyengine-us-data = ">=1.13.0"
 tqdm = "*"
 
@@ -3135,4 +3135,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.13"
-content-hash = "e1e51742c9a5e92da79a6466f1322744f620fb9bc4b00ce379880f83fd23cf9b"
+content-hash = "88024d3ab134a0f6b9c473b29df61f8877a7196af3d6b096040f9ca954aec564"
