@@ -7,14 +7,16 @@ main:
           # Replace with your Cloud Run service URL ending with /simulate.
           - cloudRunUrl: ${sys.get_env("service_url")}
     - callCloudRun:
-        call: http.post
-        args:
-          url: ${cloudRunUrl}
-          auth:
-            type: OIDC
-          headers:
-            Content-Type: "application/json"
-          body: ${input}
-        result: response
+        try:
+          call: http.post
+          args:
+            url: ${cloudRunUrl}
+            auth:
+              type: OIDC
+            headers:
+              Content-Type: "application/json"
+            body: ${input}
+          result: response
+        retry: ${http.default_retry}
     - returnResult:
         return: ${response.body}
