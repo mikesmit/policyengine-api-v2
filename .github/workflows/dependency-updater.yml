@@ -5,13 +5,10 @@ on:
     # Run every hour
     - cron: '0 * * * *'
   workflow_dispatch:  # Allow manual triggering
-  push:
-    branches:
-      - nikhilwoodruff/issue138 # Temp, test branch
 
 jobs:
   update-dependencies:
-    name: Update Dependencies
+    name: Update dependencies
     runs-on: ubuntu-latest
     
     permissions:
