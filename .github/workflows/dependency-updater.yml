@@ -52,6 +52,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update dependencies
           branch: update-dependencies
+          base: main
           delete-branch: true
           title: "Update dependencies"
           body: |
