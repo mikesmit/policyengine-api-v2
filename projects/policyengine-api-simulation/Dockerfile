@@ -24,6 +24,6 @@ RUN poetry install --with main --no-root
 
 EXPOSE 8080
 # bottlenck is memory
-# two workers to handle external reuqests (max allowed = 2)
+# one worker to handle external reuqests (max allowed = 1)
 # one worker to do the liveness check
-CMD ["poetry", "run", "uvicorn", "src.policyengine_api_simulation.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
+CMD ["poetry", "run", "uvicorn", "src.policyengine_api_simulation.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "2"]
