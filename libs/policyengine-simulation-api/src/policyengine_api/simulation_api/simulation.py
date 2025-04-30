@@ -6,6 +6,7 @@ from policyengine.simulation import SimulationOptions, Simulation
 from policyengine.outputs.macro.comparison.calculate_economy_comparison import (
     EconomyComparison,
 )
+from pathlib import Path
 
 
 def create_router():
@@ -16,9 +17,18 @@ def create_router():
     )
     async def simulate(parameters: SimulationOptions) -> EconomyComparison:
         model = SimulationOptions.model_validate(parameters)
-
+        print("Initialising")
         simulation = Simulation(**model.model_dump())
+        print("Calculating")
+        result = simulation.calculate_economy_comparison()
+        # Clear data files
 
-        return simulation.calculate_economy_comparison()
+        for file in Path(".").glob("*.csv"):
+            file.unlink()
+
+        for file in Path(".").glob("*.h5"):
+            file.unlink()
+
+        return result
 
     return router
