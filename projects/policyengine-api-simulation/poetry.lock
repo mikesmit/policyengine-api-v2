@@ -1009,14 +1009,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "huggingface-hub"
-version = "0.31.0"
+version = "0.31.1"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "huggingface_hub-0.31.0-py3-none-any.whl", hash = "sha256:cfe5600bfa845229a834fc5dc1475163ee7ae2b5e7f379e1ff890ccd8c7533e8"},
-    {file = "huggingface_hub-0.31.0.tar.gz", hash = "sha256:a7d5969d492d9a6cd22b899a64281eeb1cb1c023493e3e3d67b1fe17f185ca55"},
+    {file = "huggingface_hub-0.31.1-py3-none-any.whl", hash = "sha256:43f73124819b48b42d140cbc0d7a2e6bd15b2853b1b9d728d4d55ad1750cac5b"},
+    {file = "huggingface_hub-0.31.1.tar.gz", hash = "sha256:492bb5f545337aa9e2f59b75ef4c5f535a371e8958a6ce90af056387e67f1180"},
 ]
 
 [package.dependencies]
@@ -1927,14 +1927,14 @@ url = "../../libs/policyengine-simulation-api"
 
 [[package]]
 name = "policyengine-uk"
-version = "2.24.1"
+version = "2.24.2"
 description = "PolicyEngine tax and benefit system for the UK"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "policyengine_uk-2.24.1-py3-none-any.whl", hash = "sha256:4becb9f822fb607822e1621942a7aa5698e85058e8ab87648268e2b50a59201b"},
-    {file = "policyengine_uk-2.24.1.tar.gz", hash = "sha256:1929f4f372e194146230c49e057eebcaf1d92526a5a4fed8b51fa136cca8d2fd"},
+    {file = "policyengine_uk-2.24.2-py3-none-any.whl", hash = "sha256:c3691ec3941d35fef7e55aa99c073dd4c736ba3a268dda9bac6dddc7169c6966"},
+    {file = "policyengine_uk-2.24.2.tar.gz", hash = "sha256:7a1e13881a096b493b5766da81d28846b8ea4b8db74182f57dca7bdbe72a17c5"},
 ]
 
 [package.dependencies]
@@ -1942,18 +1942,18 @@ microdf_python = "*"
 PolicyEngine-Core = ">=3.6.4"
 
 [package.extras]
-dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest", "setuptools", "sphinx-argparse (>=0.3.2,<1)", "sphinx-math-dollar (>=1.2.1,<2)", "tqdm", "wheel", "yaml-changelog (>=0.1.7)"]
+dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest", "setuptools", "snowballstemmer (>=2,<3)", "sphinx-argparse (>=0.3.2,<1)", "sphinx-math-dollar (>=1.2.1,<2)", "tqdm", "wheel", "yaml-changelog (>=0.1.7)"]
 
 [[package]]
 name = "policyengine-us"
-version = "1.265.3"
+version = "1.266.0"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.265.3-py3-none-any.whl", hash = "sha256:2c5a251afd889415a0f289f52c86a0c2a6af4208f30e7b748b334afab6cd4243"},
-    {file = "policyengine_us-1.265.3.tar.gz", hash = "sha256:32cb5f23774f6a631aa7c49a494a752e9183155f45d816f834ad9d7c8d8e8d15"},
+    {file = "policyengine_us-1.266.0-py3-none-any.whl", hash = "sha256:958dd6770d432a017e43229ec6c8b76a9884ea8d30cd22e2e88d128f06e381b3"},
+    {file = "policyengine_us-1.266.0.tar.gz", hash = "sha256:4e08bfb1cfc2f8df3118a6782f7e1c4523da4ecf0c5bdccc6b1936952d70f617"},
 ]
 
 [package.dependencies]
