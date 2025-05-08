@@ -1905,14 +1905,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.266.0"
+version = "1.269.1"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.266.0-py3-none-any.whl", hash = "sha256:958dd6770d432a017e43229ec6c8b76a9884ea8d30cd22e2e88d128f06e381b3"},
-    {file = "policyengine_us-1.266.0.tar.gz", hash = "sha256:4e08bfb1cfc2f8df3118a6782f7e1c4523da4ecf0c5bdccc6b1936952d70f617"},
+    {file = "policyengine_us-1.269.1-py3-none-any.whl", hash = "sha256:561e176afa04da9b16d1a0b8850ecba0c60a283fc227f28d5d3f062cf5bddce7"},
+    {file = "policyengine_us-1.269.1.tar.gz", hash = "sha256:7a243b5abe7a73b616966f31bdc5dcfe3f158f14d10d0291b558ecb7ee947f1c"},
 ]
 
 [package.dependencies]
