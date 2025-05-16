@@ -276,6 +276,18 @@ wrapt = ">=1.10,<2"
 dev = ["PyTest", "PyTest-Cov", "bump2version (<1)", "setuptools ; python_version >= \"3.12\"", "tox"]
 
 [[package]]
+name = "diskcache"
+version = "5.6.3"
+description = "Disk Cache -- Disk and file backed persistent cache."
+optional = false
+python-versions = ">=3"
+groups = ["main"]
+files = [
+    {file = "diskcache-5.6.3-py3-none-any.whl", hash = "sha256:5e31b2d5fbad117cc363ebaf6b689474db18a1f6438bc82358b024abd4c2ca19"},
+    {file = "diskcache-5.6.3.tar.gz", hash = "sha256:2c3a3fa2743d8535d832ec61c2054a1641f41775aa7c556758a109941e33e4fc"},
+]
+
+[[package]]
 name = "dnspython"
 version = "2.7.0"
 description = "DNS toolkit"
@@ -1783,18 +1795,19 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "policyengine"
-version = "0.3.1"
+version = "0.3.5"
 description = "A package to conduct policy analysis using PolicyEngine tax-benefit models."
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "policyengine-0.3.1.tar.gz", hash = "sha256:0edd27487d295b3b83e1dd6af0fc6021e88c71b697bc190d6b15e98a789ad051"},
+    {file = "policyengine-0.3.5.tar.gz", hash = "sha256:a16c8142e6002d13051fbef2382f0000b7225d681caa76889eef04cdafed31d7"},
 ]
 
 [package.dependencies]
+diskcache = ">=5.6.3,<6.0.0"
 getpass4 = "*"
-google-cloud-storage = "*"
+google-cloud-storage = ">=3.1.0,<4.0.0"
 microdf_python = "*"
 policyengine_core = ">=3.10"
 policyengine-uk = "*"
@@ -1802,7 +1815,7 @@ policyengine-us = ">=1.213.1"
 pydantic = "*"
 
 [package.extras]
-dev = ["autodoc_pydantic", "black", "build", "furo", "itables", "jupyter-book", "pytest", "yaml-changelog (>=0.1.7)"]
+dev = ["autodoc_pydantic", "black", "build", "furo", "itables", "jupyter-book", "pytest", "pytest-asyncio (>=0.26.0)", "yaml-changelog (>=0.1.7)"]
 
 [[package]]
 name = "policyengine-core"
@@ -1882,14 +1895,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.283.0"
+version = "1.284.0"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.283.0-py3-none-any.whl", hash = "sha256:4a40c085c1e4b2db024cc08193eb2851aa25d9c043ed8c3d60fe585a170275d0"},
-    {file = "policyengine_us-1.283.0.tar.gz", hash = "sha256:51036e9cba38963f8d918ed7936756da4c1cbaf0ebb2effe271d20abdd99d0bf"},
+    {file = "policyengine_us-1.284.0-py3-none-any.whl", hash = "sha256:a652b4f95a23a232cece5fc77e4f269c910dff76b36ffef5d2a8af6d39efac5c"},
+    {file = "policyengine_us-1.284.0.tar.gz", hash = "sha256:f43cda6614c9c9363e879ed957571d97df249d143c63df2034b4ab3d87762e3f"},
 ]
 
 [package.dependencies]
