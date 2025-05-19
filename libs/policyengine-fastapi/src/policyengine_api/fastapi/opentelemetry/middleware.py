@@ -34,11 +34,12 @@ class Middleware:
         )
 
     async def __call__(self, request: Request, call_next) -> Any:
-        route = next(
-            r
-            for r in self.routes
-            if r.route.matches(request.scope)[0] != Match.NONE
-        )
+        route:Route | None = None
+        for r in self.routes:
+            if r.route.matches(request.scope)[0] != Match.NONE:
+                route = r
+                break
+        
         start = time()
         if route:
             route.execution.add(amount=1)
@@ -46,4 +47,5 @@ class Middleware:
             return await call_next(request)
         finally:
             duration = time() - start
-            route.latency.record(amount=duration)
+            if route:
+                route.latency.record(amount=duration)
