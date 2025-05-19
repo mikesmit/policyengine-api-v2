@@ -1000,14 +1000,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "huggingface-hub"
-version = "0.31.2"
+version = "0.31.4"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "huggingface_hub-0.31.2-py3-none-any.whl", hash = "sha256:8138cd52aa2326b4429bb00a4a1ba8538346b7b8a808cdce30acb6f1f1bdaeec"},
-    {file = "huggingface_hub-0.31.2.tar.gz", hash = "sha256:7053561376ed7f6ffdaecf09cc54d70dc784ac6315fa4bb9b93e19662b029675"},
+    {file = "huggingface_hub-0.31.4-py3-none-any.whl", hash = "sha256:4f70704760296cc69b612916056e9845f5490a33782b924fc531767967acc15d"},
+    {file = "huggingface_hub-0.31.4.tar.gz", hash = "sha256:5a7bc710b9f9c028aee5b1476867b4ec5c1b92f043cb364d5fdc54354757e4ce"},
 ]
 
 [package.dependencies]
@@ -1795,13 +1795,13 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "policyengine"
-version = "0.3.5"
+version = "0.3.7"
 description = "A package to conduct policy analysis using PolicyEngine tax-benefit models."
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "policyengine-0.3.5.tar.gz", hash = "sha256:a16c8142e6002d13051fbef2382f0000b7225d681caa76889eef04cdafed31d7"},
+    {file = "policyengine-0.3.7.tar.gz", hash = "sha256:7814a75e7a0fac68a58707b2ccdb9dd26a6c7572bf7f746ee2f5a86507e6ba62"},
 ]
 
 [package.dependencies]
@@ -1895,14 +1895,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.284.0"
+version = "1.285.0"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.284.0-py3-none-any.whl", hash = "sha256:a652b4f95a23a232cece5fc77e4f269c910dff76b36ffef5d2a8af6d39efac5c"},
-    {file = "policyengine_us-1.284.0.tar.gz", hash = "sha256:f43cda6614c9c9363e879ed957571d97df249d143c63df2034b4ab3d87762e3f"},
+    {file = "policyengine_us-1.285.0-py3-none-any.whl", hash = "sha256:460317015b2683fe23bfdac705aae76dbfa13251388b2280187cd8553f66bdbd"},
+    {file = "policyengine_us-1.285.0.tar.gz", hash = "sha256:62e8821afc50403a98becca06a12abe078fbe2524be2822df62315103d64f47b"},
 ]
 
 [package.dependencies]
