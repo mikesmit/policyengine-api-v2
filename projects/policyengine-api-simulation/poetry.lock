@@ -1816,13 +1816,13 @@ testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
 name = "policyengine"
-version = "0.3.7"
+version = "0.3.9"
 description = "A package to conduct policy analysis using PolicyEngine tax-benefit models."
 optional = false
 python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "policyengine-0.3.7.tar.gz", hash = "sha256:7814a75e7a0fac68a58707b2ccdb9dd26a6c7572bf7f746ee2f5a86507e6ba62"},
+    {file = "policyengine-0.3.9.tar.gz", hash = "sha256:551dc96e58346a84abcedbd372d6113d806320697775f0f79f78eb6ba41a12cd"},
 ]
 
 [package.dependencies]
@@ -1936,14 +1936,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.285.0"
+version = "1.287.0"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.285.0-py3-none-any.whl", hash = "sha256:460317015b2683fe23bfdac705aae76dbfa13251388b2280187cd8553f66bdbd"},
-    {file = "policyengine_us-1.285.0.tar.gz", hash = "sha256:62e8821afc50403a98becca06a12abe078fbe2524be2822df62315103d64f47b"},
+    {file = "policyengine_us-1.287.0-py3-none-any.whl", hash = "sha256:fb1579b3b708bf3835f59625768521cafeba8fd8b435dbc8281e7cd67fbd59ff"},
+    {file = "policyengine_us-1.287.0.tar.gz", hash = "sha256:85f5b08b4917308c9087110139f1319eaa68dec204f825fa1df1bf53864a03f5"},
 ]
 
 [package.dependencies]
