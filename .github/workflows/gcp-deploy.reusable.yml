@@ -30,6 +30,7 @@ jobs:
       #This is required for the test step so it can authenticate and connect to
       #the beta endpoint
       full_api_url: ${{ steps.deploy_infra.outputs.full_api_url }}
+      simulation_api_url: ${{ steps.deploy_infra.outputs.simulation_api_url }}
     environment: ${{ inputs.environment }}
     env:
       TF_VAR_stage: ${{ inputs.environment }}
@@ -57,8 +58,11 @@ jobs:
         make -f Makefile.deploy deploy-infra
         #parse the resulting output variables and make them outputs of this step.
         FULL_API_URL=$(cat terraform/infra-policyengine-api/terraform_output.json | jq -r .full_api_url.value)
+        SIMULATION_API_URL=$(cat terraform/infra-policyengine-api/terraform_output.json | jq -r .simulation_api_url.value)
         echo "exporting full_api_url ${FULL_API_URL}"
         echo "full_api_url=${FULL_API_URL}" >> "$GITHUB_OUTPUT"
+        echo "exporting simulation_api_url ${SIMULATION_API_URL}"
+        echo "simulation_api_url=${SIMULATION_API_URL}" >> "$GITHUB_OUTPUT"
 
   integ_test:
     needs: [deploy]
@@ -80,16 +84,25 @@ jobs:
         python-version: "3.11"
     - name: Set up poetry
       run: uv pip install poetry --system
-    - name: Auth as tester SA in GCP
-      id: get-id-token
+    - name: Auth as tester SA in GCP for full api
+      id: get-full-id-token
       uses: "google-github-actions/auth@v2"
-      with:
+      with: 
         workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
         service_account: "tester@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
         token_format: "id_token"
         id_token_audience: ${{ needs.deploy.outputs.full_api_url }}
         id_token_include_email: true
+    - name: Auth as tester SA in GCP for simulation api
+      id: get-simulation-id-token
+      uses: "google-github-actions/auth@v2"
+      with:
+        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
+        service_account: "tester@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
+        token_format: "id_token"
+        id_token_audience: ${{ needs.deploy.outputs.simulation_api_url }}
+        id_token_include_email: true
     - name: Mask id token to prevent accidental leak
       run: echo "::add-mask::${{steps.get-id-token.outputs.id_token}}"
     - name: run integ tests against deployed API
-      run: make -f Makefile.deploy integ-test  ACCESS_TOKEN=${{steps.get-id-token.outputs.id_token}} FULL_API_URL=${{needs.deploy.outputs.full_api_url }}
+      run: make -f Makefile.deploy integ-test  FULL_API_ACCESS_TOKEN=${{steps.get-full-id-token.outputs.id_token}} FULL_API_URL=${{needs.deploy.outputs.full_api_url }} SIMULATION_API_ACCESS_TOKEN=${{steps.get-simulation-id-token.outputs.id_token}} SIMULATION_API_URL=${{needs.deploy.outputs.simulation_api_url}}
