@@ -205,14 +205,14 @@ files = [
 
 [[package]]
 name = "click"
-version = "8.2.0"
+version = "8.2.1"
 description = "Composable command line interface toolkit"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "click-8.2.0-py3-none-any.whl", hash = "sha256:6b303f0b2aa85f1cb4e5303078fadcbcd4e476f114fab9b5007005711839325c"},
-    {file = "click-8.2.0.tar.gz", hash = "sha256:f5452aeddd9988eefa20f90f05ab66f17fce1ee2a36907fd30b05bbb5953814d"},
+    {file = "click-8.2.1-py3-none-any.whl", hash = "sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b"},
+    {file = "click-8.2.1.tar.gz", hash = "sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202"},
 ]
 
 [package.dependencies]
@@ -417,14 +417,14 @@ typing = ["typing-extensions (>=4.12.2) ; python_version < \"3.11\""]
 
 [[package]]
 name = "fsspec"
-version = "2025.3.2"
+version = "2025.5.0"
 description = "File-system specification"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "fsspec-2025.3.2-py3-none-any.whl", hash = "sha256:2daf8dc3d1dfa65b6aa37748d112773a7a08416f6c70d96b264c96476ecaf711"},
-    {file = "fsspec-2025.3.2.tar.gz", hash = "sha256:e52c77ef398680bbd6a98c0e628fbc469491282981209907bbc8aea76a04fdc6"},
+    {file = "fsspec-2025.5.0-py3-none-any.whl", hash = "sha256:0ca253eca6b5333d8a2b8bd98c7326fe821f1f0fdbd34e1b445bddde8e804c95"},
+    {file = "fsspec-2025.5.0.tar.gz", hash = "sha256:e4f4623bb6221f7407fd695cc535d1f857a077eb247580f4ada34f5dc25fd5c8"},
 ]
 
 [package.extras]
@@ -502,14 +502,14 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
 
 [[package]]
 name = "google-auth"
-version = "2.40.1"
+version = "2.40.2"
 description = "Google Authentication Library"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "google_auth-2.40.1-py2.py3-none-any.whl", hash = "sha256:ed4cae4f5c46b41bae1d19c036e06f6c371926e97b19e816fc854eff811974ee"},
-    {file = "google_auth-2.40.1.tar.gz", hash = "sha256:58f0e8416a9814c1d86c9b7f6acf6816b51aba167b2c76821965271bac275540"},
+    {file = "google_auth-2.40.2-py2.py3-none-any.whl", hash = "sha256:f7e568d42eedfded58734f6a60c58321896a621f7c116c411550a4b4a13da90b"},
+    {file = "google_auth-2.40.2.tar.gz", hash = "sha256:a33cde547a2134273226fa4b853883559947ebe9207521f7afc707efbf690f58"},
 ]
 
 [package.dependencies]
@@ -1163,14 +1163,14 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "jsonpickle"
-version = "4.0.5"
+version = "4.1.0"
 description = "jsonpickle encodes/decodes any Python object to/from JSON"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "jsonpickle-4.0.5-py3-none-any.whl", hash = "sha256:b4ac7d0a75ddcdfd93445737f1d36ff28768690d43e54bf5d0ddb1d915e580df"},
-    {file = "jsonpickle-4.0.5.tar.gz", hash = "sha256:f299818b39367c361b3f26bdba827d4249ab5d383cd93144d0f94b5417aacb35"},
+    {file = "jsonpickle-4.1.0-py3-none-any.whl", hash = "sha256:763f837a0b2586b45424d9a07108a798d9feac52f3a152606336f7f9e1a22ffa"},
+    {file = "jsonpickle-4.1.0.tar.gz", hash = "sha256:d417d6d693a63fb137e53334164aba618d18aca05a4fd025ff01c2ec134ae4c8"},
 ]
 
 [package.extras]
@@ -1876,14 +1876,14 @@ url = "../policyengine-fastapi"
 
 [[package]]
 name = "policyengine-uk"
-version = "2.24.2"
+version = "2.25.0"
 description = "PolicyEngine tax and benefit system for the UK"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "policyengine_uk-2.24.2-py3-none-any.whl", hash = "sha256:c3691ec3941d35fef7e55aa99c073dd4c736ba3a268dda9bac6dddc7169c6966"},
-    {file = "policyengine_uk-2.24.2.tar.gz", hash = "sha256:7a1e13881a096b493b5766da81d28846b8ea4b8db74182f57dca7bdbe72a17c5"},
+    {file = "policyengine_uk-2.25.0-py3-none-any.whl", hash = "sha256:044d1254ae8c88ecda3a86655be4fcdb1ffa1d95da44a988656ef78829ce74aa"},
+    {file = "policyengine_uk-2.25.0.tar.gz", hash = "sha256:c95903569fd8807b37d61a694e63c2a70a8099fcbab78c7120ca03f10d27a1c3"},
 ]
 
 [package.dependencies]
@@ -1895,14 +1895,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.287.0"
+version = "1.288.0"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.287.0-py3-none-any.whl", hash = "sha256:fb1579b3b708bf3835f59625768521cafeba8fd8b435dbc8281e7cd67fbd59ff"},
-    {file = "policyengine_us-1.287.0.tar.gz", hash = "sha256:85f5b08b4917308c9087110139f1319eaa68dec204f825fa1df1bf53864a03f5"},
+    {file = "policyengine_us-1.288.0-py3-none-any.whl", hash = "sha256:16dfe5020a60077861c246ea33d3c7bd48451b9ea26cdb11ecb4808fdcb30b6e"},
+    {file = "policyengine_us-1.288.0.tar.gz", hash = "sha256:ec8dbb799552849e218858259331b16a46ff51525c026a5b2891be1f197e9ffd"},
 ]
 
 [package.dependencies]
@@ -2781,14 +2781,14 @@ files = [
 
 [[package]]
 name = "typing-inspection"
-version = "0.4.0"
+version = "0.4.1"
 description = "Runtime typing introspection tools"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "typing_inspection-0.4.0-py3-none-any.whl", hash = "sha256:50e72559fcd2a6367a19f7a7e610e6afcb9fac940c650290eed893d61386832f"},
-    {file = "typing_inspection-0.4.0.tar.gz", hash = "sha256:9765c87de36671694a67904bf2c96e395be9c6439bb6c87b5142569dcdd65122"},
+    {file = "typing_inspection-0.4.1-py3-none-any.whl", hash = "sha256:389055682238f53b04f7badcb49b989835495a96700ced5dab2d8feae4b26f51"},
+    {file = "typing_inspection-0.4.1.tar.gz", hash = "sha256:6ae134cc0203c33377d43188d4064e9b357dba58cff3185f22924610e70a9d28"},
 ]
 
 [package.dependencies]
