@@ -1876,14 +1876,14 @@ url = "../policyengine-fastapi"
 
 [[package]]
 name = "policyengine-uk"
-version = "2.25.0"
+version = "2.28.0"
 description = "PolicyEngine tax and benefit system for the UK"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "policyengine_uk-2.25.0-py3-none-any.whl", hash = "sha256:044d1254ae8c88ecda3a86655be4fcdb1ffa1d95da44a988656ef78829ce74aa"},
-    {file = "policyengine_uk-2.25.0.tar.gz", hash = "sha256:c95903569fd8807b37d61a694e63c2a70a8099fcbab78c7120ca03f10d27a1c3"},
+    {file = "policyengine_uk-2.28.0-py3-none-any.whl", hash = "sha256:70127fc772eebda85433fc60853f616ce2c35d9e17132f940c43e3668e1ab5b7"},
+    {file = "policyengine_uk-2.28.0.tar.gz", hash = "sha256:47b7cb8f7faf21774806e5d2736418781a58bfbb3184cb882521ce78af473f50"},
 ]
 
 [package.dependencies]
@@ -1895,14 +1895,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.288.0"
+version = "1.289.1"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.288.0-py3-none-any.whl", hash = "sha256:16dfe5020a60077861c246ea33d3c7bd48451b9ea26cdb11ecb4808fdcb30b6e"},
-    {file = "policyengine_us-1.288.0.tar.gz", hash = "sha256:ec8dbb799552849e218858259331b16a46ff51525c026a5b2891be1f197e9ffd"},
+    {file = "policyengine_us-1.289.1-py3-none-any.whl", hash = "sha256:3d676ed9c7159955aa640469d4cde69b3765208a698cf8dcbfa1c51f725d1aa4"},
+    {file = "policyengine_us-1.289.1.tar.gz", hash = "sha256:69f3c509304e120daf5a65ed5950184449db552dfd8e31aa3efbda664a73e1a5"},
 ]
 
 [package.dependencies]
