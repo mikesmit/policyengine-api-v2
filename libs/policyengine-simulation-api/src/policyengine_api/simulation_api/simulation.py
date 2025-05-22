@@ -21,13 +21,6 @@ def create_router():
         simulation = Simulation(**model.model_dump())
         print("Calculating")
         result = simulation.calculate_economy_comparison()
-        # Clear data files
-
-        for file in Path(".").glob("*.csv"):
-            file.unlink()
-
-        for file in Path(".").glob("*.h5"):
-            file.unlink()
 
         return result
 
