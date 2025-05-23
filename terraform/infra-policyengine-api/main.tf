@@ -65,8 +65,6 @@ module "cloud_run_simulation_api" {
     memory = var.is_prod ? "32Gi" : "16Gi"
   }
 
-  
-
   project_id=var.project_id
   region=var.region
   slack_notification_channel_name=var.slack_notification_channel_name
@@ -85,6 +83,22 @@ module "cloud_run_simulation_api" {
   # This service can't really handle more than one request in a single container so
   # we don't use uptime check
   enable_uptime_check = false
+}
+
+
+# use google blobs to map versions of us and uk country packages.
+# this allows us to coordinate with other services that require a specific version
+# of these pacakges to be live before running.
+resource "google_storage_bucket" "metadata" {
+  name = "${var.project_id}-metadata"
+  location      = "US"
+  storage_class = "STANDARD"
+
+  uniform_bucket_level_access = true
+}
+
+locals {
+  metadata = "{\"uri\":\"${module.cloud_run_simulation_api.uri}\",\"revision\":\"${module.cloud_run_simulation_api.latest_ready_revision}\",\"policyengine-us\":\"${var.policyengine-us-package-version}\",\"policyengine-uk\":\"${var.policyengine-uk-package-version}\"}"
 }
 
 # Create a workflow
