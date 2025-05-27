@@ -101,7 +101,7 @@ locals {
   metadata = "{\"uri\":\"${module.cloud_run_simulation_api.uri}\",\"revision\":\"${module.cloud_run_simulation_api.latest_ready_revision}\",\"policyengine-us\":\"${var.policyengine-us-package-version}\",\"policyengine-uk\":\"${var.policyengine-uk-package-version}\"}"
 }
 
-# Create a workflow
+# Create the workflow for executing the simulation api
 resource "google_workflows_workflow" "simulation_workflow" {
   name            = "simulation-workflow"
   region          = var.region
@@ -119,12 +119,36 @@ resource "google_workflows_workflow" "simulation_workflow" {
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 }
 
+#Create a workflow for waiting for a specific set of country package versions to exist
+resource "google_workflows_workflow" "wait_for_country_packages" {
+  name            = "wait-for-country-packages"
+  region          = var.region
+  description     = "Workflow to wait for country packages to exist"
+  service_account = google_service_account.workflow_sa.email
+
+  deletion_protection = false 
+
+  labels = {
+    env = var.is_prod ? "prod" : "test"
+  }
+  source_contents = file("workflows/wait_for_country_versions.yaml")
+}
+
+
+
 # Grant necessary permissions to the workflow service account
 resource "google_project_iam_member" "workflow_sa_permissions" {
   for_each = toset(["roles/workflows.invoker", "roles/run.invoker"])
   project = var.project_id
   role = each.key
   member = "serviceAccount:${google_service_account.workflow_sa.email}"
+}
+
+#give the workflow access to the bucket
+resource "google_storage_bucket_iam_member" "bucket_iam_member" {
+  bucket = google_storage_bucket.metadata.name
+  role   = "roles/storage.objectViewer"  # Example: Grant object viewer role
+  member = "serviceAccount:${google_service_account.workflow_sa.email}"  # Example: Grant access to a user
 }
 
 # Create a secret for the Hugging Face token
