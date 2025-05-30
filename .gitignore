@@ -11,3 +11,4 @@ artifacts/
 apply.tfvars
 backend.tfvars
 CLAUDE.md
+.vscode

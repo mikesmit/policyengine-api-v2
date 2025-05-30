@@ -4,6 +4,7 @@ build:
 	cd libs/policyengine-simulation-api && make build
 	cd projects/policyengine-api-full && make build
 	cd projects/policyengine-api-simulation && make build
+	cd projects/policyengine-api-tagger && make build
 
 update:
 	cd libs/policyengine-fastapi && poetry lock && poetry update
@@ -11,6 +12,7 @@ update:
 	cd libs/policyengine-simulation-api && poetry lock && poetry update
 	cd projects/policyengine-api-full && poetry lock && poetry update
 	cd projects/policyengine-api-simulation && poetry lock && poetry update
+	cd projects/policyengine-api-tagger && poetry lock && poetry update
 
 dev-api-full:
 	echo "Starting API (full) in dev mode"
