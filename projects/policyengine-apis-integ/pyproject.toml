@@ -18,6 +18,9 @@ dependencies = [
 policyengine_full_api_client = {develop = true}
 policyengine_simulation_api_client = {develop = true}
 
+[tool.poetry.group.dev.dependencies]
+pytest-xdist = "^3.7.0"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
