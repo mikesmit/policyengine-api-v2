@@ -98,7 +98,14 @@ resource "google_storage_bucket" "metadata" {
 }
 
 locals {
-  metadata = "{\"uri\":\"${module.cloud_run_simulation_api.uri}\",\"revision\":\"${module.cloud_run_simulation_api.latest_ready_revision}\",\"policyengine-us\":\"${var.policyengine-us-package-version}\",\"policyengine-uk\":\"${var.policyengine-uk-package-version}\"}"
+  metadata = {
+    uri      = module.cloud_run_simulation_api.uri
+    revision = module.cloud_run_simulation_api.latest_ready_revision
+    models = {
+      us = var.policyengine-us-package-version
+      uk = var.policyengine-uk-package-version
+    }
+  }
 }
 
 # Create the workflow for executing the simulation api
