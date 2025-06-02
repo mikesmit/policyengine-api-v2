@@ -42,6 +42,36 @@ module "cloud_run_full_api" {
   enable_uptime_check = true
 }
 
+module "cloud_run_tagger_api" {
+  source = "./modules/fastapi_cloudrun"
+
+  name = "tagger-api"
+  description = "API used to tag revisions for simulation api given a specific country package version"
+  docker_repo = "policyengine-api-tagger"
+  container_tag = var.tagger_container_tag
+  members_can_invoke = ["serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com"]
+
+  limits = {
+    cpu    = var.is_prod ? 1 : null
+    memory = var.is_prod ? "1024Mi" : null
+  }
+
+  project_id=var.project_id
+  region=var.region
+  slack_notification_channel_name=var.slack_notification_channel_name
+  commit_url = var.commit_url
+
+  uptime_timeout = var.is_prod ? "1s" : "30s"
+  min_instance_count = var.is_prod ? 1: 0
+  max_instance_count = 1
+  #guessing. Need to tune.
+  max_instance_request_concurrency = var.is_prod ? 20: 1
+  #this service should return basically immediately to all requests.
+  timeout = "1s"
+
+  enable_uptime_check = true
+}
+
 module "cloud_run_simulation_api" {
   source = "./modules/fastapi_cloudrun"
 

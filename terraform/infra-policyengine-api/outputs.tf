@@ -6,6 +6,10 @@ output "simulation_api_url" {
   value = module.cloud_run_simulation_api.uri
 }
 
+output "tagger_api_url" {
+  value = module.cloud_run_tagger_api.uri
+}
+
 output "workflow_id" {
   value = google_workflows_workflow.simulation_workflow.id
 }

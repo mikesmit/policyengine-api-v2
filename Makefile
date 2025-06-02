@@ -26,6 +26,10 @@ dev-api-household:
 	echo "Starting API (household) in dev mode"
 	cd projects/policyengine-household-api && make dev
 
+dev-api-tagger:
+	echo "Starting API (tagger) in dev mode"
+	cd projects/policyengine-tagger-api && make dev
+
 dev:
 	echo "Starting APIs (full+simulation) in dev mode"
 	make dev-api-full & make dev-api-simulation
@@ -37,6 +41,7 @@ deploy-infra: terraform/.bootstrap_settings
 	echo "Publishing API images"
 	cd projects/policyengine-api-full && make deploy
 	cd projects/policyengine-api-simulation && make deploy
+	cd projects/policyengine-api-tagger && make deploy
 	echo "Deploying infrastructure"
 	cd terraform/infra-policyengine-api && make deploy
 

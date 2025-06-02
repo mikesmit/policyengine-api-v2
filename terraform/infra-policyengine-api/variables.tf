@@ -19,6 +19,11 @@ variable "simulation_container_tag" {
   type        = string
 }
 
+variable "tagger_container_tag" {
+  description = "The container image for the tagger API"
+  type        = string
+}
+
 variable "is_prod" {
   description = "Whether this is a production deployment"
   type        = bool
