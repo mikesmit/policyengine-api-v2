@@ -77,3 +77,28 @@ jobs:
         version: ">= 363.0.0"
     - name: Build application
       run: make -f Makefile.deploy publish-full-api-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs
+
+  build_tagger_api_image:
+    # Any runner supporting Node 20 or newer
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      #required to auth against GCP
+      id-token: "write"
+
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v4
+    - uses: "google-github-actions/auth@v2"
+      with:
+        workload_identity_provider: "${{ vars._GITHUB_IDENTITY_POOL_PROVIDER_NAME }}"
+        service_account: "builder@${{ vars.PROJECT_ID }}.iam.gserviceaccount.com"
+    - name: "Set up Cloud SDK"
+      uses: "google-github-actions/setup-gcloud@v2"
+      with:
+        version: ">= 363.0.0"
+    - name: Build application
+      run: make -f Makefile.deploy publish-tagger-api-docker TAG=${{ github.sha }} PROJECT_ID=${{ vars.PROJECT_ID }} LOG_DIR=gs://${{ vars.PROJECT_ID }}-buildlogs

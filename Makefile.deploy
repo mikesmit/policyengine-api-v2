@@ -4,6 +4,9 @@ publish-full-api-docker:
 publish-simulation-api-docker:
 	cd projects/policyengine-api-simulation && make -f Makefile.deploy deploy TAG=${TAG} PROJECT_ID=${PROJECT_ID}
 
+publish-tagger-api-docker:
+	cd projects/policyengine-api-tagger && make -f Makefile.deploy deploy TAG=${TAG} PROJECT_ID=${PROJECT_ID}
+
 deploy-project:
 	cd terraform/project-policyengine-api && make -f Makefile.deploy deploy
 
