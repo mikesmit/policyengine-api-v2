@@ -51,6 +51,10 @@ module "cloud_run_tagger_api" {
   container_tag = var.tagger_container_tag
   members_can_invoke = ["serviceAccount:tester@${var.project_id}.iam.gserviceaccount.com"]
 
+  env = {
+    metadata_bucket_name =  google_storage_bucket.metadata.name
+  }
+
   limits = {
     cpu    = var.is_prod ? 1 : null
     memory = var.is_prod ? "1024Mi" : null
@@ -70,6 +74,39 @@ module "cloud_run_tagger_api" {
   timeout = "1s"
 
   enable_uptime_check = true
+}
+
+#give the tagger api access to the bucket
+resource "google_storage_bucket_iam_member" "bucket_iam_tagger_member" {
+  bucket = google_storage_bucket.metadata.name
+  role   = "roles/storage.objectViewer"  # Example: Grant object viewer role
+  member = "serviceAccount:${module.cloud_run_tagger_api.sa_email}"  # Example: Grant access to a user
+}
+
+#give permission to get and update cloudrun services (for tagging revisions)
+#if you don't define your own permissions the closest role is run.developer which seems a bit expansive.
+resource "google_project_iam_custom_role" "cloudrun_service_updater" {
+  role_id     = "cloudRunServiceUpdater"
+  title       = "Cloud Run Service Updater"
+  description = "Can get and update Cloud Run services"
+  permissions = [
+    "run.services.get",
+    "run.services.update"
+  ]
+}
+
+resource "google_project_iam_member" "cloudrun_service_updater" {
+  project = var.project_id
+  role    = google_project_iam_custom_role.cloudrun_service_updater.name
+  member  = "serviceAccount:${module.cloud_run_tagger_api.sa_email}"
+}
+
+# Grant permission to act as the simulation API service account
+# This is required to update the service definition (which is required to modify the traffic definitions)
+resource "google_service_account_iam_member" "cloudrun_act_as_simulation" {
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${module.cloud_run_simulation_api.sa_email}"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${module.cloud_run_tagger_api.sa_email}"
 }
 
 module "cloud_run_simulation_api" {
@@ -152,6 +189,7 @@ resource "google_workflows_workflow" "simulation_workflow" {
   }
   user_env_vars = {
     service_url = "${module.cloud_run_simulation_api.uri}/simulate/economy/comparison"
+    tagger_service_url = "${module.cloud_run_tagger_api.uri}" 
   }
   source_contents = file("../../projects/policyengine-api-simulation/workflow.yaml")
 }

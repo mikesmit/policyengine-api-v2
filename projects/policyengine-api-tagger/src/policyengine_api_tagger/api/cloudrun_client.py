@@ -11,13 +11,18 @@ log = logging.getLogger(__file__)
 
 
 class CloudrunClient:
-    def __init__(self):
-        self.services_client = ServicesAsyncClient()
 
     async def tag_revision(
         self, cloudrun_service_name: str, revision_name: str, tag: str
     ) -> str:
-        service = await self.services_client.get_service(
+        #Not clearly documented anywhere I could find. the creation of this
+        #client __MUST__ be done in the same async threadpool as the one
+        #that actually uses it.
+        #Generally speaking this means you should always create the client
+        #right where you use it.
+        services_client = ServicesAsyncClient()
+        log.info(f"Getting service information for service {cloudrun_service_name}")
+        service = await services_client.get_service(
             GetServiceRequest(name=cloudrun_service_name)
         )
         log.info(f"Looking for revision {revision_name}")
@@ -47,7 +52,7 @@ class CloudrunClient:
         # update request _should_ ask the cloudrun service to only succeed
         # if the record has not changed between the original get and this update.
         # none of this is explicitly documented for cloudrun or this call though.
-        await self.services_client.update_service(
+        await services_client.update_service(
             UpdateServiceRequest(
                 service=service, update_mask={"paths": ["traffic"]}
             )

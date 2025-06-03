@@ -59,6 +59,12 @@ variable "environment_secrets" {
   default = {}
 }
 
+variable "env" {
+  description = "Environment variables directly assigned to string values"
+  type = map(string)
+  default = {}
+}
+
 variable "timeout" {
   description = "Max time a container can take to respond to a request up to 1 hour"
   type = string
