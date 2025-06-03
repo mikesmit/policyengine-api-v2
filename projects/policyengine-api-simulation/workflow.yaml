@@ -4,8 +4,44 @@ main:
   steps:
     - init:
         assign:
-          # Replace with your Cloud Run service URL ending with /simulate.
-          - cloudRunUrl: ${sys.get_env("service_url")}
+          # Default Cloud Run service URL ending with /simulate
+          - defaultCloudRunUrl: ${sys.get_env("service_url")}
+          # Tagger service URL
+          - taggerServiceUrl: ${sys.get_env("tagger_service_url")}
+          - cloudRunUrl: ${defaultCloudRunUrl}
+    
+    - checkForTagging:
+        switch:
+          - condition: ${"country" in input and "model_version" in input}
+            next: callTaggerService
+        next: callCloudRun
+    
+    - callTaggerService:
+        try:
+          call: http.get
+          args:
+            url: ${taggerServiceUrl + "/tag"}
+            auth:
+              type: OIDC
+            query:
+              country: ${input.country}
+              model_version: ${input.model_version}
+          result: taggerResponse
+        retry: ${http.default_retry}
+        except:
+          as: e
+          steps:
+            - handleTaggerError:
+                switch:
+                  - condition: ${e.code == 404}
+                    raise: ${"Model version " + input.model_version + " not found for country " + input.country}
+                  - condition: true
+                    raise: ${e}
+    
+    - updateCloudRunUrl:
+        assign:
+          - cloudRunUrl: ${taggerResponse.body}
+    
     - callCloudRun:
         try:
           call: http.post
@@ -13,10 +49,13 @@ main:
             url: ${cloudRunUrl}
             auth:
               type: OIDC
+              # Annoyingly, cloudrun tagged URLs still expect the base url as the audience. See https://www.googlecloudcommunity.com/gc/Serverless/Cloud-Run-Auth-token-not-working-on-the-tagged-revision-url/m-p/402100#M256
+              audience: ${defaultCloudRunUrl}
             headers:
               Content-Type: "application/json"
             body: ${input}
           result: response
         retry: ${http.default_retry}
+    
     - returnResult:
         return: ${response.body}

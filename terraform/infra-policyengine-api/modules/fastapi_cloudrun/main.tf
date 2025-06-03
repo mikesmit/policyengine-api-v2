@@ -1,5 +1,10 @@
 locals {
   api_image = "${var.region}-docker.pkg.dev/${ var.project_id }/api-v2/${ var.docker_repo }:${var.container_tag}"
+
+  environment_variables = merge(
+    { for k, v in var.environment_secrets : k => { secret = v } },
+    { for k, v in var.env : k => { value = v } }
+  )
 }
 
 # Create a custom service account
@@ -64,18 +69,25 @@ resource "google_cloud_run_v2_service" "api" {
       }
 
       dynamic "env" {
-        for_each = var.environment_secrets
+        for_each = local.environment_variables
         content {
-          name  = env.key
-          value_source {
-            secret_key_ref {
-              secret = env.value
-              version = "latest"
+          name = env.key
+    
+          dynamic "value_source" {
+            for_each = can(env.value.secret) ? [1] : []
+            content {
+              secret_key_ref {
+                secret = env.value.secret
+                version = "latest"
+              }
             }
           }
+    
+          value = can(env.value.value) ? env.value.value : null
         }
       }
     }
+
     scaling {
       # always keep one instance hot in prod
       min_instance_count = var.min_instance_count

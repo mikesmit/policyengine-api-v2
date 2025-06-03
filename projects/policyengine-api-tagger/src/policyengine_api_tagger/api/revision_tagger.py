@@ -84,6 +84,7 @@ class RevisionTagger:
             f"country-{country}-model-{model_version.replace('.','-')}"
         )
 
+        log.info(f"Getting tagged url for service {cloudrun_service_name}, revision {revision_name}, tag {tag_string}")
         service_uri = await self.cloudrun_client.tag_revision(
             cloudrun_service_name, revision_name, tag_string
         )
