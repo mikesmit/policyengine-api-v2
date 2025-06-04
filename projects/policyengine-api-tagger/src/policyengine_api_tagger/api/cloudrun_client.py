@@ -34,18 +34,22 @@ class CloudrunClient:
                         f"Revision {revision_name} is already tagged with {tag}"
                     )
                     return service.uri
+                
+        # If tagged elsewhere, remove the tag from the existing revision
+        for traffic in service.traffic:
+            if traffic.tag == tag:
+                log.info(
+                    f"Tag {tag} already exists on revision {traffic.revision}, removing"
+                )
+                self._remove_old_traffic(traffic)
 
         # Doesnt exist, so create it
-        new_traffic = TrafficTarget()
-        new_traffic.revision = revision_name
-        new_traffic.percent = 0
-        new_traffic.tag = tag
-        new_traffic.type_ = (
-            TrafficTargetAllocationType.TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION
+        new_traffic = self._create_new_traffic(
+            revision_name=revision_name, tag=tag
         )
         service.traffic.append(new_traffic)
 
-        log.info(f"tagging revision {revision_name} with tag {tag}")
+        log.info(f"Tagging revision {revision_name} with tag {tag}")
         # I have no direct documentation of this but
         # this _should_ fail if the record has already been updated because
         # the original request includes an "etag" which, when provided in this
@@ -58,3 +62,21 @@ class CloudrunClient:
             )
         )
         return service.uri
+
+    def _create_new_traffic(
+        self, revision_name: str, tag: str
+    ) -> TrafficTarget:
+        new_traffic = TrafficTarget()
+        new_traffic.revision = revision_name
+        new_traffic.percent = 0
+        new_traffic.tag = tag
+        new_traffic.type_ = (
+            TrafficTargetAllocationType.TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION
+        )
+        return new_traffic
+    
+    def _remove_old_traffic(
+        self, traffic: TrafficTarget
+    ):
+        traffic.tag = None
+        traffic.percent = 0
