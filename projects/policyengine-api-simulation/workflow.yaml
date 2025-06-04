@@ -4,11 +4,14 @@ main:
   steps:
     - init:
         assign:
-          # Default Cloud Run service URL ending with /simulate
+          # Default Cloud Run service URL (hostname only)
           - defaultCloudRunUrl: ${sys.get_env("service_url")}
+          # Service path
+          - servicePath: ${sys.get_env("service_path")}
           # Tagger service URL
           - taggerServiceUrl: ${sys.get_env("tagger_service_url")}
-          - cloudRunUrl: ${defaultCloudRunUrl}
+          # Full URL with path for default service
+          - cloudRunUrl: ${defaultCloudRunUrl + "/" + servicePath}
     
     - checkForTagging:
         switch:
@@ -40,7 +43,8 @@ main:
     
     - updateCloudRunUrl:
         assign:
-          - cloudRunUrl: ${taggerResponse.body}
+          # Assume taggerResponse.body returns a hostname, append the service path
+          - cloudRunUrl: ${taggerResponse.body + "/" + servicePath}
     
     - callCloudRun:
         try:
@@ -49,7 +53,7 @@ main:
             url: ${cloudRunUrl}
             auth:
               type: OIDC
-              # Annoyingly, cloudrun tagged URLs still expect the base url as the audience. See https://www.googlecloudcommunity.com/gc/Serverless/Cloud-Run-Auth-token-not-working-on-the-tagged-revision-url/m-p/402100#M256
+              # Use the base hostname for audience
               audience: ${defaultCloudRunUrl}
             headers:
               Content-Type: "application/json"
