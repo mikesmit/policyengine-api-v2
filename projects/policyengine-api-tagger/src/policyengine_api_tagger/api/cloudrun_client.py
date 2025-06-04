@@ -34,14 +34,13 @@ class CloudrunClient:
                         f"Revision {revision_name} is already tagged with {tag}"
                     )
                     return service.uri
-                
-        # If tagged elsewhere, remove the tag from the existing revision
-        for traffic in service.traffic:
-            if traffic.tag == tag:
-                log.info(
+        # If tagged elsewhere, remove the tag from the existing revision 
+        removed = [t for t in service.traffic if t.tag == tag]
+        for traffic in removed:
+            log.info(
                     f"Tag {tag} already exists on revision {traffic.revision}, removing"
                 )
-                self._remove_old_traffic(traffic)
+        service.traffic = [t for t in service.traffic if t.tag != tag]
 
         # Doesnt exist, so create it
         new_traffic = self._create_new_traffic(
@@ -74,9 +73,3 @@ class CloudrunClient:
             TrafficTargetAllocationType.TRAFFIC_TARGET_ALLOCATION_TYPE_REVISION
         )
         return new_traffic
-    
-    def _remove_old_traffic(
-        self, traffic: TrafficTarget
-    ):
-        traffic.tag = None
-        traffic.percent = 0
