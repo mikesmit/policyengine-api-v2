@@ -24,6 +24,7 @@ main:
           call: http.get
           args:
             url: ${taggerServiceUrl + "/tag"}
+            timeout: 1800
             auth:
               type: OIDC
             query:
