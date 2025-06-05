@@ -167,7 +167,7 @@ resource "google_storage_bucket" "metadata" {
 locals {
   metadata = {
     uri      = module.cloud_run_simulation_api.uri
-    revision = module.cloud_run_simulation_api.latest_ready_revision
+    revision = module.cloud_run_simulation_api.revision
     models = {
       us = var.policyengine-us-package-version
       uk = var.policyengine-uk-package-version

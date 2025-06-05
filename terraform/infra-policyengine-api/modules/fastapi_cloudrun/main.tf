@@ -5,6 +5,8 @@ locals {
     { for k, v in var.environment_secrets : k => { secret = v } },
     { for k, v in var.env : k => { value = v } }
   )
+
+  revision_name = "${var.service_name}-${var.container_tag}-{formatdate("YYYYMMDD-hhmmss", timestamp())}"
 }
 
 # Create a custom service account
@@ -34,6 +36,7 @@ resource "google_cloud_run_v2_service" "api" {
   description = var.description
 
   template {
+    revision = local.revision_name
     service_account = google_service_account.api.email
     max_instance_request_concurrency = var.max_instance_request_concurrency
     containers {
