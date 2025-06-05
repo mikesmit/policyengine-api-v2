@@ -7,6 +7,9 @@ from policyengine.outputs.macro.comparison.calculate_economy_comparison import (
     EconomyComparison,
 )
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__file__)
 
 
 def create_router():
@@ -17,10 +20,11 @@ def create_router():
     )
     async def simulate(parameters: SimulationOptions) -> EconomyComparison:
         model = SimulationOptions.model_validate(parameters)
-        print("Initialising")
+        logger.info("Initialising simulation from input")
         simulation = Simulation(**model.model_dump())
-        print("Calculating")
+        logger.info("Calculating comparison")
         result = simulation.calculate_economy_comparison()
+        logger.info("Comparison complete")
 
         return result
 
