@@ -8,7 +8,7 @@ locals {
 
   #force revision name to conform to limits...
   revision_name = substr(replace(
-    lower("${var.name}-${substr(var.container_tag,0,7)}-${formatdate('YYYYMMDDhhmmss', timestamp())}"),
+    lower("${var.name}-${substr(var.container_tag,0,7)}-${formatdate("YYYYMMDDhhmmss", timestamp())}"),
     "/[^a-z0-9-]/",  # Replace anything not lowercase, digit, or hyphen
     "-"
   ), 0, 63)
