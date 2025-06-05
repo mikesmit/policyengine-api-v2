@@ -24,7 +24,6 @@ main:
           call: http.get
           args:
             url: ${taggerServiceUrl + "/tag"}
-            timeout: 1800
             auth:
               type: OIDC
             query:
@@ -52,6 +51,7 @@ main:
           call: http.post
           args:
             url: ${cloudRunUrl}
+            timeout: 1800
             auth:
               type: OIDC
               # Use the base hostname for audience
