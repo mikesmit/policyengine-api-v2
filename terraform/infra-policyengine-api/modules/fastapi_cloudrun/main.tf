@@ -6,7 +6,7 @@ locals {
     { for k, v in var.env : k => { value = v } }
   )
 
-  revision_name = "${var.service_name}-${var.container_tag}-{formatdate('YYYYMMDD-hhmmss', timestamp())}"
+  revision_name = "${var.name}-${var.container_tag}-{formatdate('YYYYMMDD-hhmmss', timestamp())}"
 }
 
 # Create a custom service account
