@@ -1937,14 +1937,14 @@ url = "../../libs/policyengine-simulation-api"
 
 [[package]]
 name = "policyengine-uk"
-version = "2.31.0"
+version = "2.32.0"
 description = "PolicyEngine tax and benefit system for the UK"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "policyengine_uk-2.31.0-py3-none-any.whl", hash = "sha256:dc95a5a6e5120893a069e69bd276f3ebd4004ef59e0e8b20c36b8a1349830a00"},
-    {file = "policyengine_uk-2.31.0.tar.gz", hash = "sha256:0ab0a2bf7995eb34c6a04b456f843c31bbfbac01194953689eb79ca26a6c34a9"},
+    {file = "policyengine_uk-2.32.0-py3-none-any.whl", hash = "sha256:0006fd03b002585b03a191e00182738071df189fa23a45228dfe18d1fd6487ce"},
+    {file = "policyengine_uk-2.32.0.tar.gz", hash = "sha256:ddbb14087ad497393b391c7e32a761c321e44e415950404561688a3182986d6f"},
 ]
 
 [package.dependencies]
