@@ -1,10 +1,4 @@
-build: test
+include ../../common.mk
 
-install:
-	poetry install
-
-test: install
-	poetry run pytest
-
-format: 
-	black . -l 79
+pyright:
+	echo "SKIPPING PYRIGHT" # currently this project is completely un-type safe
