@@ -53,9 +53,7 @@ async def test_given_tagged_revision_DOES_NOT_exist__then_create_and_return_new_
     async_client.get_service.return_value = service
     service.uri = "https://TEST_SERVICE_URI"
     service.traffic = [
-        TrafficTarget(
-            revision="TEST_REVISION_NAME", percent=0, tag="SOME_OTHER_TAG"
-        )
+        TrafficTarget(revision="TEST_REVISION_NAME", percent=0, tag="SOME_OTHER_TAG")
     ]
 
     client = CloudrunClient()
@@ -104,12 +102,8 @@ async def test_given_tagged_revision_exists_on_different_revision__then_delete_o
     async_client.get_service.return_value = service
     service.uri = "https://TEST_SERVICE_URI"
     service.traffic = [
-        TrafficTarget(
-            revision="TEST_REVISION_NAME", percent=0, tag="SOME_OTHER_TAG"
-        ),
-        TrafficTarget(
-            revision="OLD_REVISION", percent=0, tag="TEST_TAG"
-        )
+        TrafficTarget(revision="TEST_REVISION_NAME", percent=0, tag="SOME_OTHER_TAG"),
+        TrafficTarget(revision="OLD_REVISION", percent=0, tag="TEST_TAG"),
     ]
 
     client = CloudrunClient()
