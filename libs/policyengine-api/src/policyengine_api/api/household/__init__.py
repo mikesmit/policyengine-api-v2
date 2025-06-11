@@ -11,9 +11,7 @@ def include_all_routers(
     optional_auth: JWTDecoder,
     auth: JWTDecoder,
 ):
-    app.include_router(
-        create_household_router(session_dependency=session_depedency)
-    )
+    app.include_router(create_household_router(session_dependency=session_depedency))
     app.include_router(
         create_user_router(
             session_dependency=session_depedency,

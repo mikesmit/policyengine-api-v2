@@ -11,9 +11,7 @@ import pytest
 def client() -> TestClient:
     SQLModel.metadata.drop_all(bind=engine)
     SQLModel.metadata.create_all(engine)
-    router = create_household_router(
-        session_dependency=create_session_dep(engine)
-    )
+    router = create_household_router(session_dependency=create_session_dep(engine))
     api = createApi(router)
     return TestClient(api)
 
