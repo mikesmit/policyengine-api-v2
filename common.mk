@@ -35,3 +35,6 @@ test:
 
 generate:
 	echo "No code generation target defined"
+
+update:
+	uv lock --upgrade
