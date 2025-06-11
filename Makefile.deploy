@@ -18,4 +18,4 @@ integ-test:
 	cd projects/policyengine-api-full && make build
 	cd projects/policyengine-api-simulation && make build
         # run the integration test using the client.
-	cd projects/policyengine-apis-integ && make integ-test FULL_API_URL='$(FULL_API_URL)' SIMULATION_API_URL='$(SIMULATION_API_URL)' FULL_API_ACCESS_TOKEN='$(FULL_API_ACCESS_TOKEN)' SIMULATION_API_ACCESS_TOKEN='$(SIMULATION_API_ACCESS_TOKEN)'
+	cd projects/policyengine-apis-integ && make FULL_API_URL='$(FULL_API_URL)' SIMULATION_API_URL='$(SIMULATION_API_URL)' FULL_API_ACCESS_TOKEN='$(FULL_API_ACCESS_TOKEN)' SIMULATION_API_ACCESS_TOKEN='$(SIMULATION_API_ACCESS_TOKEN)'
