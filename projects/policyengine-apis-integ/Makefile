@@ -1,7 +1,9 @@
 include ../../common.mk
 test: integ-test
+	echo "Skipping default test target in favor of integ-test"
 
 integ-test:
+	echo "Running integration tests"
 	$(if $(FULL_API_ACCESS_TOKEN),FULL_INTEG_TEST_ACCESS_TOKEN='$(FULL_API_ACCESS_TOKEN)') \
 	$(if $(SIMULATION_API_ACCESS_TOKEN),SIMULATION_INTEG_TEST_ACCESS_TOKEN='$(SIMULATION_API_ACCESS_TOKEN)') \
 	$(if $(FULL_API_URL),FULL_INTEG_TEST_BASE_URL='$(FULL_API_URL)') \

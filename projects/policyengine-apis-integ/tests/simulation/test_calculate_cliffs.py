@@ -10,7 +10,7 @@ def test_calculation_cliffs(client: policyengine_simulation_api_client.DefaultAp
                 {"2026-01-01.2100-12-31": 0}
             )
         },
-        include_cliffs=True,
+        include_cliffs=True,  # type: ignore
         subsample=200,  # reduce the number of households to speed things up.
         data=policyengine_simulation_api_client.Data(
             "gs://policyengine-us-data/cps_2023.h5"
