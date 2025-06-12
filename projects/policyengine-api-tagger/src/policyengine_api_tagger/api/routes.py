@@ -6,6 +6,7 @@ import logging
 
 log = logging.getLogger(__file__)
 
+
 def create_router(tagger: RevisionTagger) -> APIRouter:
     router = APIRouter()
 

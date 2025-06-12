@@ -11,9 +11,7 @@ from policyengine_api.fastapi.database import create_session_dep
 
 
 def auth_override(
-    creds: HTTPAuthorizationCredentials | None = Depends(
-        HTTPBearer(auto_error=False)
-    ),
+    creds: HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False)),
 ):
     """
     fake auth that fails if there is no token and succeeds otherwise
@@ -25,9 +23,7 @@ def auth_override(
 
 
 def optional_auth_override(
-    creds: HTTPAuthorizationCredentials | None = Depends(
-        HTTPBearer(auto_error=False)
-    ),
+    creds: HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False)),
 ):
     """
     same but doesn't raise an HTTPException if there is no bearer
@@ -108,9 +104,7 @@ def test_get_user_no_auth(client: TestClient, createdUser):
 def test_get_user_by_same_user(client: TestClient, createdUser):
     response = client.get(
         f"/user/{createdUser['id']}",
-        headers={
-            "authorization": f'Bearer {{"sub":"{createdUser["auth0_sub"]}"}}'
-        },
+        headers={"authorization": f'Bearer {{"sub":"{createdUser["auth0_sub"]}"}}'},
     )
 
     assert response.status_code == 200
@@ -125,9 +119,7 @@ def test_get_user_not_exist(client: TestClient):
 def test_delete_user(client: TestClient, createdUser):
     response = client.delete(
         f"/user/{createdUser['id']}",
-        headers={
-            "authorization": f'Bearer {{"sub":"{createdUser["auth0_sub"]}"}}'
-        },
+        headers={"authorization": f'Bearer {{"sub":"{createdUser["auth0_sub"]}"}}'},
     )
 
     assert response.status_code == 200

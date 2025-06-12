@@ -2,6 +2,10 @@
 bootstrap:
 	scripts/bootstrap.sh desktop
 
+attach:
+	scripts/attach.sh
+	terraform init
+
 bootstrap_beta:
 	scripts/bootstrap.sh beta
 

@@ -141,7 +141,8 @@ module "cloud_run_simulation_api" {
   request_based_billing = true
   min_instance_count = var.is_prod ? 1: 0
   #arbitrary number. May need to tweak
-  max_instance_count = var.is_prod ? 10 : 1
+  #permit at least 3 in beta so integration tests don't fail when run in parallel
+  max_instance_count = var.is_prod ? 10 : 3
   #we are currently memory bound. internally it runs 2 handlers. keep one open for liveness checks.
   max_instance_request_concurrency = 1
   #permit max timeout since we run entire population simulations.

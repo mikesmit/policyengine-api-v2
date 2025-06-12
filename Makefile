@@ -1,18 +1,16 @@
+LIBDIRS := libs/policyengine-fastapi libs/policyengine-api libs/policyengine-simulation-api 
+SERVICEDIRS := projects/policyengine-api-full projects/policyengine-api-simulation projects/policyengine-api-tagger
+SUBDIRS := $(LIBDIRS) $(SERVICEDIRS)
+
 build:
-	cd libs/policyengine-fastapi && make build
-	cd libs/policyengine-api && make build
-	cd libs/policyengine-simulation-api && make build
-	cd projects/policyengine-api-full && make build
-	cd projects/policyengine-api-simulation && make build
-	cd projects/policyengine-api-tagger && make build
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir build; \
+	done
 
 update:
-	cd libs/policyengine-fastapi && poetry lock && poetry update
-	cd libs/policyengine-api && poetry lock && poetry update
-	cd libs/policyengine-simulation-api && poetry lock && poetry update
-	cd projects/policyengine-api-full && poetry lock && poetry update
-	cd projects/policyengine-api-simulation && poetry lock && poetry update
-	cd projects/policyengine-api-tagger && poetry lock && poetry update
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir update; \
+	done
 
 dev-api-full:
 	echo "Starting API (full) in dev mode"

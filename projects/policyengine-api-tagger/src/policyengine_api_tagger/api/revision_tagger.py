@@ -63,9 +63,7 @@ class RevisionTagger:
         self.bucket_name = bucket_name
         self.cloudrun_client = CloudrunClient()
 
-    async def _lookup_revision(
-        self, country: str, model_version: str
-    ) -> str | None:
+    async def _lookup_revision(self, country: str, model_version: str) -> str | None:
         metadata = await _get_blob_as_metadata(
             self.bucket_name, f"{country}.{model_version}.json"
         )
@@ -80,11 +78,11 @@ class RevisionTagger:
 
         revision_name = revision_path.split("/")[-1]
         cloudrun_service_name = revision_path.rsplit("/revisions/", 1)[0]
-        tag_string = (
-            f"country-{country}-model-{model_version.replace('.','-')}"
-        )
+        tag_string = f"country-{country}-model-{model_version.replace('.','-')}"
 
-        log.info(f"Getting tagged url for service {cloudrun_service_name}, revision {revision_name}, tag {tag_string}")
+        log.info(
+            f"Getting tagged url for service {cloudrun_service_name}, revision {revision_name}, tag {tag_string}"
+        )
         service_uri = await self.cloudrun_client.tag_revision(
             cloudrun_service_name, revision_name, tag_string
         )
