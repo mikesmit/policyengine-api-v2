@@ -8,9 +8,9 @@ from policyengine_api.fastapi.health import (
 )
 from policyengine_api.fastapi.exit import exit
 
-from .api.revision_tagger import RevisionTagger
-from .api.routes import add_all_routes
-from .api.settings import get_settings, Environment
+from .revision_tagger import RevisionTagger
+from .routes import add_all_routes
+from .settings import get_settings, Environment
 from policyengine_api.fastapi.opentelemetry import (
     GCPLoggingInstrumentor,
     FastAPIEnhancedInstrumenter,

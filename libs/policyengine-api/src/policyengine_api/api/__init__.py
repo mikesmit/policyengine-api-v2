@@ -11,12 +11,16 @@ to easily be run in whatever cloud provider container or desktop or test environ
 """
 
 
-def initialize(app: FastAPI, engine: Engine, jwt_issuer: str, jwt_audience: str):
+def initialize(
+    app: FastAPI, engine: Engine, jwt_issuer: str, jwt_audience: str
+):
     """
     attach all routes to the app and configure them to use the provided SQLModel engine
     and jwt settings.
     """
-    optional_auth = JWTDecoder(jwt_issuer, audience=jwt_audience, auto_error=False)
+    optional_auth = JWTDecoder(
+        jwt_issuer, audience=jwt_audience, auto_error=False
+    )
     auth = JWTDecoder(jwt_issuer, audience=jwt_audience, auto_error=True)
     include_all_routers(
         app,

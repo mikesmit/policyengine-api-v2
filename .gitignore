@@ -1,5 +1,4 @@
 .env
-.coverage
 database.db
 *.egg-info
 **/__pycache__

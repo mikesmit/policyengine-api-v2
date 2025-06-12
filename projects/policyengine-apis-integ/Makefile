@@ -1,9 +1,7 @@
-include ../../common.mk
-test: integ-test
-
 integ-test:
+	poetry install
 	$(if $(FULL_API_ACCESS_TOKEN),FULL_INTEG_TEST_ACCESS_TOKEN='$(FULL_API_ACCESS_TOKEN)') \
 	$(if $(SIMULATION_API_ACCESS_TOKEN),SIMULATION_INTEG_TEST_ACCESS_TOKEN='$(SIMULATION_API_ACCESS_TOKEN)') \
 	$(if $(FULL_API_URL),FULL_INTEG_TEST_BASE_URL='$(FULL_API_URL)') \
 	$(if $(SIMULATION_API_URL),SIMULATION_INTEG_TEST_BASE_URL='$(SIMULATION_API_URL)') \
-	uv run pytest -n auto
+	poetry run pytest -n auto

@@ -18,11 +18,11 @@ deploy: .terraform
 	@echo "Attempting to get the latest docker images with the '${TAG}' tag"
 	$(eval FULL_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-full:$(TAG) --format='value(image_summary.digest)'))
 	$(eval SIM_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-simulation:$(TAG) --format='value(image_summary.digest)'))
-	$(eval TAGGER_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-tagger:$(TAG) --format='value(image_summary.digest)'))
+        $(eval TAGGER_SHA := $(shell gcloud artifacts docker images describe $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPO)/policyengine-api-tagger:$(TAG) --format='value(image_summary.digest)'))
 	@echo "Latest Full API SHA: ${FULL_SHA}"
 	@echo "Latest Simulation API SHA: ${SIM_SHA}"
 	@echo "Running terraform apply with ../.bootstrap_settings/apply.tfvars"
-	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "full_container_tag=${TAG}@${FULL_SHA}" -var "simulation_container_tag=${TAG}@${SIM_SHA}" -var "tagger_container_tag=${TAG}@${TAGGER_SHA}" -var "commit_url=${COMMIT_URL}" -var "policyengine-us-package-version=desktop" -var "policyengine-uk-package-version=desktop"
+	terraform apply -var-file ../.bootstrap_settings/apply.tfvars -var "full_container_tag=${TAG}@${FULL_SHA}" -var "simulation_container_tag=${TAG}@${SIM_SHA}" -var "tagger_container_tag=${TAG}@${FULL_SHA}" -var "commit_url=${COMMIT_URL}" -var "policyengine-us-package-version=desktop" -var "policyengine-uk-package-version=desktop" -var "policyengine-tagger-version=desktop"
 
 .terraform: ../.bootstrap_settings/backend.tfvars
 	@echo "Initializing terraform"

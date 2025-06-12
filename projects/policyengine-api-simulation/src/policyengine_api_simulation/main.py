@@ -28,7 +28,6 @@ specific example instantiation of the app configured by a .env file
 
 logger = logging.getLogger(__name__)
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with exit.lifespan():
