@@ -428,14 +428,14 @@ grpc = ["grpcio (>=1.38.0,<2.0dev)", "grpcio-status (>=1.38.0,<2.0.dev0)"]
 
 [[package]]
 name = "google-cloud-monitoring"
-version = "2.27.1"
+version = "2.27.2"
 description = "Google Cloud Monitoring API client library"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "google_cloud_monitoring-2.27.1-py3-none-any.whl", hash = "sha256:cb38e2295e87ff68644bda9eaa2cd9094ebb63f2f4efd1090a7af1c1f0b142cc"},
-    {file = "google_cloud_monitoring-2.27.1.tar.gz", hash = "sha256:f4700900a658cd6c9b7f714bb29d007facef0cf0d628d0075699c3a73bce8a55"},
+    {file = "google_cloud_monitoring-2.27.2-py3-none-any.whl", hash = "sha256:70b2e877d6267a3548ca17be301a4253fe83d4bebf7ea5cd8ee68b9dd3a70a02"},
+    {file = "google_cloud_monitoring-2.27.2.tar.gz", hash = "sha256:d0f00205a5f94530dc72c3b96f681be14abdf1d6144dae5d2b922b54a90c43fa"},
 ]
 
 [package.dependencies]
@@ -498,14 +498,14 @@ tracing = ["opentelemetry-api (>=1.1.0)"]
 
 [[package]]
 name = "google-cloud-trace"
-version = "1.16.1"
+version = "1.16.2"
 description = "Google Cloud Trace API client library"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "google_cloud_trace-1.16.1-py3-none-any.whl", hash = "sha256:a4a6c90f7507823024c43ed7890baecf68ebd8cb20a6d7e03622c5f04087fef4"},
-    {file = "google_cloud_trace-1.16.1.tar.gz", hash = "sha256:15308b04f12d958f2b3831a4f76b97c61c0c7a46804bdc570d19024938029d9a"},
+    {file = "google_cloud_trace-1.16.2-py3-none-any.whl", hash = "sha256:40fb74607752e4ee0f3d7e5fc6b8f6eb1803982254a1507ba918172484131456"},
+    {file = "google_cloud_trace-1.16.2.tar.gz", hash = "sha256:89bef223a512465951eb49335be6d60bee0396d576602dbf56368439d303cab4"},
 ]
 
 [package.dependencies]
