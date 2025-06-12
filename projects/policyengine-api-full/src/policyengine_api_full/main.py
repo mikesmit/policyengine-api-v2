@@ -58,8 +58,8 @@ initialize(
 )
 
 health_registry = HealthRegistry()
-# TODO: we can use this to verify the db connection, etc.
-# For now, we don't register any probes and it will just report
+#TODO: we can use this to verify the db connection, etc.
+#For now, we don't register any probes and it will just report
 # healthy all the time.
 health_registry.register(HealthSystemReporter("general", {}))
 ping.include_all_routers(app, health_registry)

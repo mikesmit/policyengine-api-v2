@@ -15,15 +15,15 @@ logger = logging.getLogger(__file__)
 def create_router():
     router = APIRouter()
 
-    @router.post("/simulate/economy/comparison", response_model=EconomyComparison)
+    @router.post(
+        "/simulate/economy/comparison", response_model=EconomyComparison
+    )
     async def simulate(parameters: SimulationOptions) -> EconomyComparison:
         model = SimulationOptions.model_validate(parameters)
         logger.info("Initialising simulation from input")
         simulation = Simulation(**model.model_dump())
         logger.info("Calculating comparison")
-        result = (
-            simulation.calculate_economy_comparison()  # pyright: ignore [reportAttributeAccessIssue]
-        )
+        result = simulation.calculate_economy_comparison()
         logger.info("Comparison complete")
 
         return result

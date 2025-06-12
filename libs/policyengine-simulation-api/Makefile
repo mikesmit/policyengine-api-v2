@@ -1,4 +1,7 @@
-include ../../common.mk
+build: test
 
-test:
-	echo "SKIPPING TEST"
+install:
+	poetry install
+
+test: install
+	echo "Todo: add tests"

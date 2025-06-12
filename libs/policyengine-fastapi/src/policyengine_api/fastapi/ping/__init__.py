@@ -32,15 +32,13 @@ def create_router(health_registry: HealthRegistry) -> APIRouter:
     @router.get("/ping/alive", response_model=HealthStatus)
     async def alive():
         """
-        Check if the service is healthy. This will always return
+        Check if the service is healthy. This will always return 
         data, but will return a 503 response code if the service is
         unhealthy.
         """
         content = health_registry.report()
-        return JSONResponse(
-            content=content.model_dump(exclude_none=True),
-            status_code=200 if content.healthy else 503,
-        )
+        return JSONResponse(content=content.model_dump(exclude_none=True),
+                            status_code=200 if content.healthy else 503)
 
     return router
 

@@ -17,7 +17,9 @@ def create_sqlite_engine(filename: str | None = None) -> Engine:
     """
     sqlite_url = f"sqlite:///{filename}" if filename else "sqlite:///:memory:"
     connect_args = {"check_same_thread": False}
-    return create_engine(sqlite_url, connect_args=connect_args, poolclass=StaticPool)
+    return create_engine(
+        sqlite_url, connect_args=connect_args, poolclass=StaticPool
+    )
 
 
 SessionGeneratorFactory = Callable[[], Generator[Session, Any, None]]

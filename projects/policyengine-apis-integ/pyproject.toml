@@ -1,29 +1,31 @@
 [project]
 name = "policyengine-api-full-integ"
 version = "0.1.0"
+description = ""
+authors = [
+    {name = "Michael Smit",email = "mikesmit@coderberry.com"}
+]
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
 dependencies = [
     "pytest (>=8.3.4,<9.0.0)",
-    "policyengine_full_api_client",
-    "policyengine_simulation_api_client",
+    "policyengine_full_api_client @ ../policyengine-api-full/artifacts/clients/python",
+    "policyengine_simulation_api_client @ ../policyengine-api-simulation/artifacts/clients/python",
     "pydantic-settings (>=2.8.1,<3.0.0)",
 ]
 
-[project.optional-dependencies]
-test = [ "pytest>=8.3.4", "pytest-xdist>=3.7.0"]
-build = [ "pyright>=1.1.401", "black>=25.1.0",]
+[tool.poetry.dependencies]
+policyengine_full_api_client = {develop = true}
+policyengine_simulation_api_client = {develop = true}
 
-[tool.pytest.ini_options]
-pythonpath = [
-  "src",
-]
-testpaths = ["tests"]
+[tool.poetry.group.dev.dependencies]
+pytest-xdist = "^3.7.0"
 
-[tool.uv.sources]
-policyengine_full_api_client = { path = "../policyengine-api-full/artifacts/clients/python" }
-policyengine_simulation_api_client = { path = "../policyengine-api-simulation/artifacts/clients/python" }
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.pyright]
-#The generated clients do not do the "public export" convention
-reportPrivateImportUsage = "none"
+
+[tool.poetry]
+package-mode = false
+

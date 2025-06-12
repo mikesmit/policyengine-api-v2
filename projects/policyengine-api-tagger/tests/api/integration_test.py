@@ -31,7 +31,10 @@ def test_given_model_valid__returns_tag_url(
     bucket_data.given_metadata_exists_for(us_model_version="1.2.3")
     response = client.get("/tag?country=us&model_version=1.2.3")
     assert response.status_code == 200
-    assert response.json() == f"https://country-us-model-1-2-3---{cloudrun.hostname}"
+    assert (
+        response.json()
+        == f"https://country-us-model-1-2-3---{cloudrun.hostname}"
+    )
 
 
 def text_given_model_not_exists__returns_404(
