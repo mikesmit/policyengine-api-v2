@@ -10,13 +10,9 @@ example_people_us = {
     },
 }
 
-example_families_us = {
-    "your family": {"members": ["you", "your first dependent"]}
-}
+example_families_us = {"your family": {"members": ["you", "your first dependent"]}}
 
-example_spm_units_us = {
-    "your household": {"members": ["you", "your first dependent"]}
-}
+example_spm_units_us = {"your household": {"members": ["you", "your first dependent"]}}
 
 example_tax_units_us = {
     "your tax unit": {
@@ -69,9 +65,7 @@ class HouseholdEntity(RootModel):
 
 
 class HouseholdGeneric(BaseModel):
-    households: dict[str, HouseholdEntity] = Field(
-        examples=[example_households_us]
-    )
+    households: dict[str, HouseholdEntity] = Field(examples=[example_households_us])
     people: dict[str, HouseholdEntity] = Field(examples=[example_people_us])
     axes: Optional[dict[str, HouseholdAxes]] = None
 

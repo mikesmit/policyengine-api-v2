@@ -20,9 +20,7 @@ class Middleware:
         self.meter = metrics.get_meter("policyengine")
 
         self.routes = [
-            self._create_route(r)
-            for r in app.routes
-            if isinstance(r, APIRoute)
+            self._create_route(r) for r in app.routes if isinstance(r, APIRoute)
         ]
 
     def _create_route(self, route: APIRoute) -> Route:
@@ -34,12 +32,12 @@ class Middleware:
         )
 
     async def __call__(self, request: Request, call_next) -> Any:
-        route:Route | None = None
+        route: Route | None = None
         for r in self.routes:
             if r.route.matches(request.scope)[0] != Match.NONE:
                 route = r
                 break
-        
+
         start = time()
         if route:
             route.execution.add(amount=1)
