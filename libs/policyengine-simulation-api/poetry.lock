@@ -548,14 +548,14 @@ grpc = ["grpcio (>=1.38.0,<2.0dev)", "grpcio-status (>=1.38.0,<2.0.dev0)"]
 
 [[package]]
 name = "google-cloud-monitoring"
-version = "2.27.1"
+version = "2.27.2"
 description = "Google Cloud Monitoring API client library"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "google_cloud_monitoring-2.27.1-py3-none-any.whl", hash = "sha256:cb38e2295e87ff68644bda9eaa2cd9094ebb63f2f4efd1090a7af1c1f0b142cc"},
-    {file = "google_cloud_monitoring-2.27.1.tar.gz", hash = "sha256:f4700900a658cd6c9b7f714bb29d007facef0cf0d628d0075699c3a73bce8a55"},
+    {file = "google_cloud_monitoring-2.27.2-py3-none-any.whl", hash = "sha256:70b2e877d6267a3548ca17be301a4253fe83d4bebf7ea5cd8ee68b9dd3a70a02"},
+    {file = "google_cloud_monitoring-2.27.2.tar.gz", hash = "sha256:d0f00205a5f94530dc72c3b96f681be14abdf1d6144dae5d2b922b54a90c43fa"},
 ]
 
 [package.dependencies]
@@ -593,14 +593,14 @@ tracing = ["opentelemetry-api (>=1.1.0)"]
 
 [[package]]
 name = "google-cloud-trace"
-version = "1.16.1"
+version = "1.16.2"
 description = "Google Cloud Trace API client library"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "google_cloud_trace-1.16.1-py3-none-any.whl", hash = "sha256:a4a6c90f7507823024c43ed7890baecf68ebd8cb20a6d7e03622c5f04087fef4"},
-    {file = "google_cloud_trace-1.16.1.tar.gz", hash = "sha256:15308b04f12d958f2b3831a4f76b97c61c0c7a46804bdc570d19024938029d9a"},
+    {file = "google_cloud_trace-1.16.2-py3-none-any.whl", hash = "sha256:40fb74607752e4ee0f3d7e5fc6b8f6eb1803982254a1507ba918172484131456"},
+    {file = "google_cloud_trace-1.16.2.tar.gz", hash = "sha256:89bef223a512465951eb49335be6d60bee0396d576602dbf56368439d303cab4"},
 ]
 
 [package.dependencies]
@@ -1021,14 +1021,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "huggingface-hub"
-version = "0.32.6"
+version = "0.33.0"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "huggingface_hub-0.32.6-py3-none-any.whl", hash = "sha256:32cde9558c965477556edca72352621def7fbc42e167aaf33f4cdb9af65bb28b"},
-    {file = "huggingface_hub-0.32.6.tar.gz", hash = "sha256:8e960f23dc57519c6c2a0bbc7e9bc030eaa14e7f2d61f8e68fd3d025dabed2fa"},
+    {file = "huggingface_hub-0.33.0-py3-none-any.whl", hash = "sha256:e8668875b40c68f9929150d99727d39e5ebb8a05a98e4191b908dc7ded9074b3"},
+    {file = "huggingface_hub-0.33.0.tar.gz", hash = "sha256:aa31f70d29439d00ff7a33837c03f1f9dd83971ce4e29ad664d63ffb17d3bb97"},
 ]
 
 [package.dependencies]
@@ -1896,14 +1896,14 @@ url = "../policyengine-fastapi"
 
 [[package]]
 name = "policyengine-uk"
-version = "2.32.0"
+version = "2.32.2"
 description = "PolicyEngine tax and benefit system for the UK"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "policyengine_uk-2.32.0-py3-none-any.whl", hash = "sha256:0006fd03b002585b03a191e00182738071df189fa23a45228dfe18d1fd6487ce"},
-    {file = "policyengine_uk-2.32.0.tar.gz", hash = "sha256:ddbb14087ad497393b391c7e32a761c321e44e415950404561688a3182986d6f"},
+    {file = "policyengine_uk-2.32.2-py3-none-any.whl", hash = "sha256:c520dab065d7f8d42cd8a05a49ebeff2abe80c4b8955463726b218b8f56c8050"},
+    {file = "policyengine_uk-2.32.2.tar.gz", hash = "sha256:f474328b6f0dc76abd45e4a1eec1341d62080d79f27bcdae8c395fa7cf5fc9d0"},
 ]
 
 [package.dependencies]
@@ -1915,14 +1915,14 @@ dev = ["black", "coverage", "furo (<2023)", "jupyter-book", "linecheck", "pytest
 
 [[package]]
 name = "policyengine-us"
-version = "1.309.1"
+version = "1.312.3"
 description = "PolicyEngine tax and benefit system for the US"
 optional = false
 python-versions = "<3.13,>=3.10"
 groups = ["main"]
 files = [
-    {file = "policyengine_us-1.309.1-py3-none-any.whl", hash = "sha256:f9ece4261130f894bfd47173b230286ef62e178538791d3c8eddb597f342b66a"},
-    {file = "policyengine_us-1.309.1.tar.gz", hash = "sha256:787e6ee0fe862482b4edfe03f8edbe7345723acf96364bc33206ff10a4219302"},
+    {file = "policyengine_us-1.312.3-py3-none-any.whl", hash = "sha256:ff03cbea3d78936806e5adbf744bee0faaf090e13f0f3f8505bf301d91755081"},
+    {file = "policyengine_us-1.312.3.tar.gz", hash = "sha256:fc4d66ceb9b96dc67ffa8952c66f7787e928df0b3563d52e85a8ed881476fb91"},
 ]
 
 [package.dependencies]
