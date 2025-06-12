@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from policyengine_household_api.src.settings import get_settings, Environment
+from policyengine_household_api.settings import get_settings, Environment
 from policyengine_api.fastapi.opentelemetry import (
     GCPLoggingInstrumentor,
     FastAPIEnhancedInstrumenter,
@@ -35,7 +35,7 @@ app.include_router(metadata.router)
 # attach the api defined in the app package
 initialize(
     app=app,
-    engine=None,
+    engine=None,  # type: ignore
     jwt_issuer=get_settings().jwt_issuer,
     jwt_audience=get_settings().jwt_audience,
 )

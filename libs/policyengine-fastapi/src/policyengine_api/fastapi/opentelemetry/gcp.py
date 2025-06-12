@@ -47,9 +47,7 @@ def _get_project_id() -> str:
 def _get_project_id_from_metadata() -> str | None:
     from urllib import request
 
-    url = (
-        "http://metadata.google.internal/computeMetadata/v1/project/project-id"
-    )
+    url = "http://metadata.google.internal/computeMetadata/v1/project/project-id"
     req = request.Request(url)
     req.add_header("Metadata-Flavor", "Google")
     try:

@@ -89,21 +89,15 @@ class PolicyEngineCountry:
             current_law_id=CURRENT_LAW_IDS[country_id],
             basicInputs=system.basic_inputs,
             modeled_policies=self._build_modeled_policies(system=system),
-            version=pkg_resources.get_distribution(
-                country_package_name
-            ).version,
+            version=pkg_resources.get_distribution(country_package_name).version,
         )
 
     def _build_economy_options(self, country_id: str) -> EconomyOptions:
         regions: list[Region] = self._build_regions(country_id=country_id)
-        time_periods: list[TimePeriod] = self._build_time_periods(
-            country_id=country_id
-        )
+        time_periods: list[TimePeriod] = self._build_time_periods(country_id=country_id)
         return EconomyOptions(region=regions, time_period=time_periods)
 
-    def _build_variables(
-        self, system: TaxBenefitSystem
-    ) -> dict[str, Variable]:
+    def _build_variables(self, system: TaxBenefitSystem) -> dict[str, Variable]:
         variables: dict[str, CoreVariable] = system.variables
         variable_data = {}
         for variable_name, variable in variables.items():
@@ -150,20 +144,18 @@ class PolicyEngineCountry:
 
             match parameter:
                 case p if isinstance(parameter, CoreParameterScale):
-                    parameter_data[parameter.name] = (
-                        self._build_parameter_scale(parameter)
+                    parameter_data[parameter.name] = self._build_parameter_scale(
+                        parameter
                     )
                 case p if isinstance(parameter, CoreParameterScaleBracket):
                     parameter_data[parameter.name] = (
                         self._build_parameter_scale_bracket(parameter)
                     )
                 case p if isinstance(parameter, CoreParameter):
-                    parameter_data[parameter.name] = self._build_parameter(
-                        parameter
-                    )
+                    parameter_data[parameter.name] = self._build_parameter(parameter)
                 case p if isinstance(parameter, CoreParameterNode):
-                    parameter_data[parameter.name] = (
-                        self._build_parameter_node(parameter)
+                    parameter_data[parameter.name] = self._build_parameter_node(
+                        parameter
                     )
                 case p:
                     continue
@@ -201,9 +193,7 @@ class PolicyEngineCountry:
     def _build_variable_modules(
         self, system: TaxBenefitSystem
     ) -> dict[str, VariableModule]:
-        variable_modules: dict[str, dict[str, Any]] = (
-            system.variable_module_metadata
-        )
+        variable_modules: dict[str, dict[str, Any]] = system.variable_module_metadata
         modules = {}
         for module_path, module in variable_modules.items():
             modules[module_path] = VariableModule(
@@ -263,9 +253,7 @@ class PolicyEngineCountry:
             household=parameter.metadata.get("household", True),
         )
 
-    def _build_parameter_node(
-        self, parameter: CoreParameterNode
-    ) -> ParameterNode:
+    def _build_parameter_node(self, parameter: CoreParameterNode) -> ParameterNode:
         end_name = parameter.name.split(".")[-1]
         return ParameterNode(
             type="parameterNode",
@@ -278,9 +266,7 @@ class PolicyEngineCountry:
 
     def _build_regions(self, country_id: str) -> list[Region]:
         cwd = Path(__file__).parent
-        region_file_path = cwd.joinpath(
-            f"data/regions/{country_id}_regions.json"
-        )
+        region_file_path = cwd.joinpath(f"data/regions/{country_id}_regions.json")
         with open(region_file_path, "r") as region_file:
             regions = json.load(region_file)
         return [Region(**region) for region in regions]
@@ -320,9 +306,7 @@ class PolicyEngineCountry:
         )
 
         for computation in requested_computations:
-            self._process_computation(
-                simulation, system, household_result, computation
-            )
+            self._process_computation(simulation, system, household_result, computation)
 
         if self.country_id == "us":
             return HouseholdUS.model_validate(household_result)
@@ -341,9 +325,7 @@ class PolicyEngineCountry:
 
         for parameter_name, periods in reform.items():
             for time_period, value in periods.items():
-                self._update_parameter(
-                    system, parameter_name, time_period, value
-                )
+                self._update_parameter(system, parameter_name, time_period, value)
 
         return system
 
@@ -358,9 +340,7 @@ class PolicyEngineCountry:
         start_instant: ISO8601Date
         end_instant: ISO8601Date
         start_instant, end_instant = time_period.split(".")
-        parameter: CoreParameter = get_parameter(
-            system.parameters, parameter_name
-        )
+        parameter: CoreParameter = get_parameter(system.parameters, parameter_name)
 
         # Determine the appropriate type for the value
         node_type = type(parameter.values_list[-1].value)
@@ -433,16 +413,11 @@ class PolicyEngineCountry:
     ) -> None:
         """Handle computation for households with axes."""
         count_entities: int = len(household[entity_plural])
-        entity_index: int = self._find_entity_index(
-            household, entity_plural, entity_id
-        )
+        entity_index: int = self._find_entity_index(household, entity_plural, entity_id)
 
         # Reshape result and get values for the specific entity
         result_values: list[float] = (
-            result.astype(float)
-            .reshape((-1, count_entities))
-            .T[entity_index]
-            .tolist()
+            result.astype(float).reshape((-1, count_entities)).T[entity_index].tolist()
         )
 
         # Check for infinite values
@@ -450,9 +425,7 @@ class PolicyEngineCountry:
             raise ValueError("Infinite value")
 
         # Update household with results
-        household[entity_plural][entity_id][variable_name][
-            period
-        ] = result_values
+        household[entity_plural][entity_id][variable_name][period] = result_values
 
     def _find_entity_index(
         self, household: dict[str, Any], entity_plural: str, entity_id
@@ -486,9 +459,7 @@ class PolicyEngineCountry:
         entity_result = self._format_result(result, entity_index, variable)
 
         # Update household with result
-        household[entity_plural][entity_id][variable_name][
-            period
-        ] = entity_result
+        household[entity_plural][entity_id][variable_name][period] = entity_result
 
     def _format_result(
         self, result: ArrayLike, entity_index, variable: Variable
