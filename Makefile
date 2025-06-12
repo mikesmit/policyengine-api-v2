@@ -50,4 +50,5 @@ deploy-project: terraform/.bootstrap_settings
 deploy: deploy-project deploy-infra
 
 integ-test: 
-	cd projects/policyengine-apis-integ && make integ-test
+	echo "Running integration tests"
+	$(MAKE) -C projects/policyengine-apis-integ

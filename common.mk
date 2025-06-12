@@ -1,12 +1,15 @@
 build: remove_artifacts install checkformat pyright generate test 
 
 remove_artifacts:
+	echo "Removing artifacts directory"
 	rm -rf artifacts
 
 install:
+	echo "Downloading dependencies including test and build"
 	uv sync --extra test --extra build
 
 checkformat:
+	echo "Checking python code formatting"
 	@dirs=""; \
 	[ -d "src" ] && dirs="$$dirs src"; \
 	[ -d "tests" ] && dirs="$$dirs tests"; \
@@ -17,6 +20,7 @@ checkformat:
 	fi
 
 format:
+	echo "Updating python code formatting"
 	@dirs=""; \
 	[ -d "src" ] && dirs="$$dirs src"; \
 	[ -d "tests" ] && dirs="$$dirs tests"; \
@@ -28,9 +32,11 @@ format:
 	fi
 
 pyright:
+	echo "Checking python type usage"
 	uv run pyright 
 
 test:
+	echo "Running unit tests"
 	uv run pytest
 
 generate:
